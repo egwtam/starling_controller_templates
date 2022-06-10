@@ -1,3 +1,3 @@
 string vehicle_id
 builtin_interfaces/Time calculation_time
-float target_theta 
+float32[] target_theta 

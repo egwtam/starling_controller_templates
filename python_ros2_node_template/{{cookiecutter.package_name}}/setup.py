@@ -1,6 +1,6 @@
 from setuptools import setup
 
-package_name = 'sync_monitor'
+package_name = '{{cookiecutter.package_name}}'
 
 setup(
     name=package_name,
@@ -13,14 +13,14 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='root',
-    maintainer_email='mickey.li14@imperial.ac.uk',
-    description='TODO: Package description',
-    license='TODO: License declaration',
+    maintainer='{{cookiecutter.full_name}}',
+    maintainer_email='{{cookiecutter.email}}',
+    description='{{cookiecutter.short_description}}',
+    license='MIT License @ {{cookiecutter.full_name}} {{cookiecutter.year}}',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'monitor = sync_monitor.main:main'
+            'controller = {{cookiecutter.package_name}}.main:main'
         ],
     },
 )
