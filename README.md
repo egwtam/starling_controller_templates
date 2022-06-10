@@ -1,4 +1,4 @@
-# Starling Template Controller Generator
+# Starling Controller Generator
 
 This repository contains a number of template repositories for building up your own custom Starling compatible controller. This is designed in a modular way which allows you to mix and match different elements as you need. 
 
