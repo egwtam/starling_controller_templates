@@ -12,10 +12,10 @@ else
     echo "VEHICLE_MAVLINK_SYSID not set, default to 1"
 fi
 
-if [ ! -v $RUN_MONITOR ]; then
-    echo "Running Sync Monitor"
-    ros2 run sync_monitor monitor
-else
-    echo "Running Position Traj Controller"
-    ros2 launch position_trajectory_controller position_trajectory_controller.launch.xml
-fi
+# if [ ! -v $RUN_MONITOR ]; then
+#     echo "Running Sync Monitor"
+    # ros2 run sync_monitor monitor
+# else
+    # echo "Running Position Traj Controller"
+    # ros2 launch position_trajectory_controller position_trajectory_controller.launch.xml
+# fi
