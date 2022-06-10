@@ -8,14 +8,15 @@ NETWORK?=bridge
 ENV?=
 RUN_ARGS?=
 
+all: build
+
 help:
 	@echo "all - run build"
 	@echo "build - build the dockerfile for this project"
 	@echo "run - builds and runs the dockerfile for this project"
 	@echo "run_bash - builds and runs the dockerfile putting you into a bash shell"
 	@echo "local-build-push - locally builds and pushes amd64 and arm64 variants of your container"
-
-all: build
+	@echo "help - show this help screen"
 
 build:
 	$(BAKE) {{cookiecutter.project_name}}
