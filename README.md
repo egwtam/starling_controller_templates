@@ -34,7 +34,7 @@ Both are optional but suggested to make the most of the system.
 The first step is to build your own Starling project. The following will start the process of using the template to generate a staring project. In your workspace, run the following command. 
 
 ```bash
-cookiecutter https://github.com/StarlingUAS/starling_template_controller.git --directory starling_template
+cookiecutter https://github.com/StarlingUAS/starling_controller_templates.git --directory starling_template
 ```
 
 It will follow by asking you to fill in a number of details. The value in the square brackets indicates the default value if you choose not to enter anything. Press Enter to go on to the next one. The inputs include
@@ -91,17 +91,17 @@ The generated project has no functionality right now. This repository contains o
 These nodes can be added to your project using the following cookiecutter commands. Note that the packages should be generated into the `starling_project_name` directory of the base Starling project. Each of these commands are single line commands. 
 ```sh
 # CPP Onboard
-cookiecutter https://github.com/StarlingUAS/starling_template_controller.git --directory cpp_ros2_node_onboard_template -o starling_controller/starling_controller
+cookiecutter https://github.com/StarlingUAS/starling_controller_templates.git --directory cpp_ros2_node_onboard_template -o starling_controller/starling_controller
 ```
 
 ```sh
 # Python Offboard
-cookiecutter https://github.com/StarlingUAS/starling_template_controller.git --directory python_ros2_node_offboard_template -o starling_controller/starling_controller
+cookiecutter https://github.com/StarlingUAS/starling_controller_templates.git --directory python_ros2_node_offboard_template -o starling_controller/starling_controller
 ```
 
 ```sh
 # Messages 
-cookiecutter https://github.com/StarlingUAS/starling_template_controller.git --directory ros2_msgs_template -o starling_controller/starling_controller
+cookiecutter https://github.com/StarlingUAS/starling_controller_templates.git --directory ros2_msgs_template -o starling_controller/starling_controller
 ```
 
 Similar to the generating of the base project, these will ask a number of questions to you during the generation. In particular it will ask what the `package_name` is which will become the name of that particular node package.
