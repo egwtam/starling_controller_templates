@@ -1,3 +1,7 @@
 {
-    "node_name": "cpp_template_node"
+    "full_name": "starling_user",
+    "year": "2022",
+    "email": "starling.user@starling.co.uk",
+    "package_name": "template_cpp_node",
+    "short_description": "CPP ROS2 node template"
 }

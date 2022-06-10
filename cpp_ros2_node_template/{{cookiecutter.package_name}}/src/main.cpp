@@ -8,7 +8,7 @@
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
  */
-#include "trajectory.hpp"
+#include "main.hpp"
 
 TrajectoryHandler::TrajectoryHandler() :
 	Node("trajectory_handler",
@@ -92,17 +92,13 @@ TrajectoryHandler::TrajectoryHandler() :
         "mavros/local_position/pose", 10,
         std::bind(&TrajectoryHandler::handleLocalPosition, this, std::placeholders::_1), sub_opt);
 
-    this->sync_pause_sub =  this->create_subscription<synchronous_msgs::msg::NotifyPause>(
-        "notify_pause", 10,
-        std::bind(&TrajectoryHandler::handleNotifyPause, this, std::placeholders::_1), sub_opt);
+    // this->sync_pause_sub =  this->create_subscription<synchronous_msgs::msg::NotifyPause>(
+    //     "notify_pause", 10,
+    //     std::bind(&TrajectoryHandler::handleNotifyPause, this, std::placeholders::_1), sub_opt);
 
     // Initialise Publishers
     this->setpoint_position_pub = this->create_publisher<geometry_msgs::msg::PoseStamped>("mavros/setpoint_position/local", 1);
-    this->sync_delay_pub = this->create_publisher<synchronous_msgs::msg::NotifyDelay>("/monitor/notify_delay", 1);
-
-    // Initialise Trajectory Service
-    this->traj_serv = this->create_service<simple_offboard_msgs::srv::SubmitTrajectory>("submit_trajectory",
-        std::bind(&TrajectoryHandler::submitTrajectory, this, std::placeholders::_1, std::placeholders::_2));
+    // this->sync_delay_pub = this->create_publisher<synchronous_msgs::msg::NotifyDelay>("/monitor/notify_delay", 1);
 
     this->reset();
     RCLCPP_INFO(this->get_logger(), "Controller initialised, waiting for requests on 'submit_trajectory' service.");
@@ -160,16 +156,16 @@ void TrajectoryHandler::handleLocalPosition(const geometry_msgs::msg::PoseStampe
     }
 }
 
-void TrajectoryHandler::handleNotifyPause(const synchronous_msgs::msg::NotifyPause::SharedPtr msg) {
-    // Received a delay from another vehicle. Store this delay.
-    Duration delay = Duration(msg->delay);
+// void TrajectoryHandler::handleNotifyPause(const synchronous_msgs::msg::NotifyPause::SharedPtr msg) {
+//     // Received a delay from another vehicle. Store this delay.
+//     Duration delay = Duration(msg->delay);
 
-    // Insert or replace with new delay
-    auto const result = this->vehicle_delays.insert(std::make_pair(msg->delayed_vehicle_id, delay));
-    if (not result.second) { result.first->second = delay; }
+//     // Insert or replace with new delay
+//     auto const result = this->vehicle_delays.insert(std::make_pair(msg->delayed_vehicle_id, delay));
+//     if (not result.second) { result.first->second = delay; }
 
-    RCLCPP_INFO(this->get_logger(), "Received pause notification from " + msg->delayed_vehicle_id + " delayed by " + to_string(delay.seconds()));
-}
+//     RCLCPP_INFO(this->get_logger(), "Received pause notification from " + msg->delayed_vehicle_id + " delayed by " + to_string(delay.seconds()));
+// }
 
 void TrajectoryHandler::reset(){
     // Clear Parameters
@@ -229,128 +225,128 @@ void TrajectoryHandler::resetExecutionTimer(bool restart) {
     }
 }
 
-void TrajectoryHandler::submitTrajectory(std::shared_ptr<simple_offboard_msgs::srv::SubmitTrajectory::Request> req, std::shared_ptr<simple_offboard_msgs::srv::SubmitTrajectory::Response> res) {
-    RCLCPP_INFO(this->get_logger(), "Received Trajectory Execution Request");
+// void TrajectoryHandler::submitTrajectory(std::shared_ptr<simple_offboard_msgs::srv::SubmitTrajectory::Request> req, std::shared_ptr<simple_offboard_msgs::srv::SubmitTrajectory::Response> res) {
+//     RCLCPP_INFO(this->get_logger(), "Received Trajectory Execution Request");
 
-    if(req->frame_id.empty()) {
-        RCLCPP_INFO(this->get_logger(), "Frame_id not received, setting to default 'map'");
-        req->frame_id = "map";
-    }
-    this->frame_id = req->frame_id;
+//     if(req->frame_id.empty()) {
+//         RCLCPP_INFO(this->get_logger(), "Frame_id not received, setting to default 'map'");
+//         req->frame_id = "map";
+//     }
+//     this->frame_id = req->frame_id;
 
-    if(req->interpolation_method.empty()) {
-        RCLCPP_INFO(this->get_logger(), "Interpolation method not received, setting to default 'linear'");
-        req->interpolation_method == "linear";
-    }
+//     if(req->interpolation_method.empty()) {
+//         RCLCPP_INFO(this->get_logger(), "Interpolation method not received, setting to default 'linear'");
+//         req->interpolation_method == "linear";
+//     }
 
-    // Check if already executing a trajectory
-    if (this->executing_trajectory) {
-        res->message = "Existing Trajectory Mission in Progress";
-        res->success = false;
-		RCLCPP_ERROR(this->get_logger(), "%s", res->message.c_str());
-		return;
-    }
+//     // Check if already executing a trajectory
+//     if (this->executing_trajectory) {
+//         res->message = "Existing Trajectory Mission in Progress";
+//         res->success = false;
+// 		RCLCPP_ERROR(this->get_logger(), "%s", res->message.c_str());
+// 		return;
+//     }
 
-    try {
-        // Check if trajectory type has been given
-        if (req->type != "position")
-            throw std::runtime_error("Trajectory type not given or not recognised, select 'position'");
-
-
-        // Check trajectory is populated
-        if (req->trajectory.points.size() == 0)
-            throw std::runtime_error("Trajectory does not contain any points, no execution");
-
-    } catch (const std::exception& e) {
-		res->message = e.what();
-        res->success = false;
-		RCLCPP_ERROR(this->get_logger(), "%s", res->message.c_str());
-		this->reset();
-		return;
-	}
+//     try {
+//         // Check if trajectory type has been given
+//         if (req->type != "position")
+//             throw std::runtime_error("Trajectory type not given or not recognised, select 'position'");
 
 
-    // Check if valid positions:
-    int num_demands = 0;
-    auto tjp0 = req->trajectory.points[0];
-    if(tjp0.positions.size() >= 3) {
-        num_demands = tjp0.positions.size();
-    } else {
-        // Invalid demand? Add next one? Don't do anything?
-        res->message = "Demand type not Position, Trajectory entry 0 contains not enough position";
-        res->success = false;
-        RCLCPP_ERROR(this->get_logger(), "%s", res->message.c_str());
-        this->reset();
-        return;
-    }
+//         // Check trajectory is populated
+//         if (req->trajectory.points.size() == 0)
+//             throw std::runtime_error("Trajectory does not contain any points, no execution");
 
-    // Reset parameters
-    this->reset();
-
-    // Set parameters
-    this->executing_trajectory = true;
-
-    // Setup data
-    this->max_time_sec = 0.0;
-    for (int i=0; i < num_demands; i++) {
-        std::vector<double> demand;
-        this->demands.push_back(demand);
-    }
-    for (int i = 0; i < req->trajectory.points.size(); i++) {
-        auto tjp = req->trajectory.points[i];
-
-        double time = rclcpp::Duration(tjp.time_from_start).seconds();
-        this->times.push_back(time);
-        if (time > this->max_time_sec) {this->max_time_sec = time;}
+//     } catch (const std::exception& e) {
+// 		res->message = e.what();
+//         res->success = false;
+// 		RCLCPP_ERROR(this->get_logger(), "%s", res->message.c_str());
+// 		this->reset();
+// 		return;
+// 	}
 
 
-        if(tjp.positions.size() >= 3) {
-            for (int j= 0; j< tjp.positions.size(); j++) {
-                this->demands[j].push_back(tjp.positions[j]);
-            }
-        } else {
-            // Invalid demand? Add next one? Don't do anything?
-            res->message = "Trajectory entry with not enough position values, t = " + std::to_string(time);
-            res->success = false;
-            RCLCPP_ERROR(this->get_logger(), "%s", res->message.c_str());
-            this->reset();
-            return;
-        }
-    }
+//     // Check if valid positions:
+//     int num_demands = 0;
+//     auto tjp0 = req->trajectory.points[0];
+//     if(tjp0.positions.size() >= 3) {
+//         num_demands = tjp0.positions.size();
+//     } else {
+//         // Invalid demand? Add next one? Don't do anything?
+//         res->message = "Demand type not Position, Trajectory entry 0 contains not enough position";
+//         res->success = false;
+//         RCLCPP_ERROR(this->get_logger(), "%s", res->message.c_str());
+//         this->reset();
+//         return;
+//     }
 
-    // Set Interpolators (https://github.com/CD3/libInterpolate)
-    for (std::vector<double> demand: this->demands) {
-        _1D::AnyInterpolator<double> interp;
-        if (req->interpolation_method == "linear") {
-            interp = _1D::LinearInterpolator<double>();
-        } else if (req->interpolation_method == "cubic") {
-            interp = _1D::CubicSplineInterpolator<double>();
-        } else if (req->interpolation_method == "monotonic") {
-            interp = _1D::MonotonicInterpolator<double>();
-        } else {
-            // Invalid demand? Add next one? Don't do anything?
-            res->message = "Invalid Interpolation Method: " + req->interpolation_method;
-            res->success = false;
-            RCLCPP_ERROR(this->get_logger(), "%s", res->message.c_str());
-            this->reset();
-            return;
-        }
-        interp.setData(this->times.size(), this->times.data(), demand.data());
-        this->interpolators.push_back(interp);
-    }
+//     // Reset parameters
+//     this->reset();
 
-    RCLCPP_INFO(this->get_logger(), "Interpolators initiated");
+//     // Set parameters
+//     this->executing_trajectory = true;
 
-    // Set Takeoff Location
-    this->start_trajectory_location = req->trajectory.points[0];
+//     // Setup data
+//     this->max_time_sec = 0.0;
+//     for (int i=0; i < num_demands; i++) {
+//         std::vector<double> demand;
+//         this->demands.push_back(demand);
+//     }
+//     for (int i = 0; i < req->trajectory.points.size(); i++) {
+//         auto tjp = req->trajectory.points[i];
 
-    // Start trajectory timer state loop (stateMachine)
-    this->resetExecutionTimer();
+//         double time = rclcpp::Duration(tjp.time_from_start).seconds();
+//         this->times.push_back(time);
+//         if (time > this->max_time_sec) {this->max_time_sec = time;}
 
-    res->message = "Trajectory initialisation successful, executing submitted trajectory";
-    res->success = true;
-    RCLCPP_INFO(this->get_logger(), res->message);
-}
+
+//         if(tjp.positions.size() >= 3) {
+//             for (int j= 0; j< tjp.positions.size(); j++) {
+//                 this->demands[j].push_back(tjp.positions[j]);
+//             }
+//         } else {
+//             // Invalid demand? Add next one? Don't do anything?
+//             res->message = "Trajectory entry with not enough position values, t = " + std::to_string(time);
+//             res->success = false;
+//             RCLCPP_ERROR(this->get_logger(), "%s", res->message.c_str());
+//             this->reset();
+//             return;
+//         }
+//     }
+
+//     // Set Interpolators (https://github.com/CD3/libInterpolate)
+//     for (std::vector<double> demand: this->demands) {
+//         _1D::AnyInterpolator<double> interp;
+//         if (req->interpolation_method == "linear") {
+//             interp = _1D::LinearInterpolator<double>();
+//         } else if (req->interpolation_method == "cubic") {
+//             interp = _1D::CubicSplineInterpolator<double>();
+//         } else if (req->interpolation_method == "monotonic") {
+//             interp = _1D::MonotonicInterpolator<double>();
+//         } else {
+//             // Invalid demand? Add next one? Don't do anything?
+//             res->message = "Invalid Interpolation Method: " + req->interpolation_method;
+//             res->success = false;
+//             RCLCPP_ERROR(this->get_logger(), "%s", res->message.c_str());
+//             this->reset();
+//             return;
+//         }
+//         interp.setData(this->times.size(), this->times.data(), demand.data());
+//         this->interpolators.push_back(interp);
+//     }
+
+//     RCLCPP_INFO(this->get_logger(), "Interpolators initiated");
+
+//     // Set Takeoff Location
+//     this->start_trajectory_location = req->trajectory.points[0];
+
+//     // Start trajectory timer state loop (stateMachine)
+//     this->resetExecutionTimer();
+
+//     res->message = "Trajectory initialisation successful, executing submitted trajectory";
+//     res->success = true;
+//     RCLCPP_INFO(this->get_logger(), res->message);
+// }
 
 bool TrajectoryHandler::missionGoPressed(const rclcpp::Time&stamp) {
     return this->mission_start_receive_time && stamp - *this->mission_start_receive_time < this->mission_start_receive_timeout;
@@ -691,12 +687,12 @@ bool TrajectoryHandler::smExecuteTrajectory(const rclcpp::Time& stamp) {
                 if (not result.second) { result.first->second = delay; }
 
                 // Send delay to other vehicles
-                synchronous_msgs::msg::NotifyDelay dmsg;
-                dmsg.delay = delay;
-                dmsg.vehicle_id = this->vehicle_id;
-                dmsg.expected_arrival_time = this->start_time + planned_arrival_time;
-                dmsg.actual_arrival_time = this->start_time;
-                this->sync_delay_pub->publish(dmsg);
+                // synchronous_msgs::msg::NotifyDelay dmsg;
+                // dmsg.delay = delay;
+                // dmsg.vehicle_id = this->vehicle_id;
+                // dmsg.expected_arrival_time = this->start_time + planned_arrival_time;
+                // dmsg.actual_arrival_time = this->start_time;
+                // this->sync_delay_pub->publish(dmsg);
             }
 
             // Calculate instaneous delay

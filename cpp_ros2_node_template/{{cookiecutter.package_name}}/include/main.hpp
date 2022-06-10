@@ -37,10 +37,8 @@
 #include <tf2/convert.h>
 #include <tf2_ros/transform_broadcaster.h>
 
-#include "simple_offboard_msgs/srv/submit_trajectory.hpp"
-
-#include "synchronous_msgs/msg/notify_delay.hpp"
-#include "synchronous_msgs/msg/notify_pause.hpp"
+// #include "synchronous_msgs/msg/notify_delay.hpp"
+// #include "synchronous_msgs/msg/notify_pause.hpp"
 
 #include "mavros_msgs/msg/state.hpp"
 #include "mavros_msgs/msg/position_target.hpp"
@@ -121,7 +119,7 @@ class TrajectoryHandler : public rclcpp::Node
 {
     public:
         TrajectoryHandler();
-        void submitTrajectory(std::shared_ptr<simple_offboard_msgs::srv::SubmitTrajectory::Request> req, std::shared_ptr<simple_offboard_msgs::srv::SubmitTrajectory::Response> res);
+        // void submitTrajectory(std::shared_ptr<simple_offboard_msgs::srv::SubmitTrajectory::Request> req, std::shared_ptr<simple_offboard_msgs::srv::SubmitTrajectory::Response> res);
 
     private:
         void reset();
@@ -150,7 +148,7 @@ class TrajectoryHandler : public rclcpp::Node
         void sendSetpointPositionPose(const rclcpp::Time& stamp, const std::shared_ptr<geometry_msgs::msg::PoseStamped> pose);
         void handleLocalPosition(const geometry_msgs::msg::PoseStamped::SharedPtr s);
 
-        void handleNotifyPause(const synchronous_msgs::msg::NotifyPause::SharedPtr msg);
+        // void handleNotifyPause(const synchronous_msgs::msg::NotifyPause::SharedPtr msg);
 
         // Mission parameters
         std::shared_ptr<rclcpp::Time> mission_start_receive_time;
@@ -229,7 +227,7 @@ class TrajectoryHandler : public rclcpp::Node
 
         // Publishers
         rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr       setpoint_position_pub;
-        rclcpp::Publisher<synchronous_msgs::msg::NotifyDelay>::SharedPtr       sync_delay_pub;
+        // rclcpp::Publisher<synchronous_msgs::msg::NotifyDelay>::SharedPtr       sync_delay_pub;
 
         // Subscriptions
         rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr               mission_start_sub;
@@ -237,15 +235,12 @@ class TrajectoryHandler : public rclcpp::Node
         rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr               estop_sub;
         rclcpp::Subscription<mavros_msgs::msg::State>::SharedPtr         state_sub;
         rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr                     local_position_sub;
-        rclcpp::Subscription<synchronous_msgs::msg::NotifyPause>::SharedPtr                     sync_pause_sub;
+        // rclcpp::Subscription<synchronous_msgs::msg::NotifyPause>::SharedPtr                     sync_pause_sub;
 
         // Clients
         rclcpp::Client<mavros_msgs::srv::CommandBool>::SharedPtr        mavros_arming_srv;
         rclcpp::Client<mavros_msgs::srv::SetMode>::SharedPtr            mavros_set_mode_srv;
         rclcpp::Client<mavros_msgs::srv::CommandLong>::SharedPtr        mavros_command_srv;
-
-        // Service
-        rclcpp::Service<simple_offboard_msgs::srv::SubmitTrajectory>::SharedPtr      traj_serv;
 
         // Multithreaded callback groups
         rclcpp::CallbackGroup::SharedPtr callback_group_timers_;

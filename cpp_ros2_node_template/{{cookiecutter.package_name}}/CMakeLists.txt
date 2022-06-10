@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(position_trajectory_controller)
+project({{cookiecutter.package_name}})
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -31,21 +31,28 @@ find_package(mavros_msgs REQUIRED)
 find_package(trajectory_msgs REQUIRED)
 find_package(Boost REQUIRED COMPONENTS system)
 find_package(GeographicLib REQUIRED)
-find_package(simple_offboard_msgs REQUIRED)
-find_package(synchronous_msgs REQUIRED)
+find_package(libInterpolate REQUIRED)
 
-add_subdirectory(external/libInterpolate)
+# Add extra custom messages here
+# find_package(template_msgs REQUIRED)
+
+# Include externa libraries, e.g. libinterpolate
+# add_subdirectory(external/libInterpolate)
 
 
-set(HEADER_FILES include/trajectory.hpp)
+file(GLOB HEADER_FILES include/*.hpp)
+file(GLOB SRC_FILES src/*.cpp)
 
-add_executable(trajectory_handler src/trajectory.cpp ${HEADER_FILES})
-ament_target_dependencies(trajectory_handler
-  rclcpp std_msgs std_srvs trajectory_msgs simple_offboard_msgs
-  mavros_msgs geometry_msgs tf2 tf2_ros synchronous_msgs
+add_executable(controller ${SRC_FILES} ${HEADER_FILES})
+ament_target_dependencies(controller
+  rclcpp std_msgs std_srvs trajectory_msgs
+  mavros_msgs geometry_msgs tf2 tf2_ros 
+  # template_msgs
 )
-target_include_directories(trajectory_handler PRIVATE include)
-target_link_libraries( trajectory_handler libInterpolate::Interpolate )
+target_include_directories(controller PRIVATE include)
+
+# Include external libraries for the controller executable
+target_link_libraries( controller libInterpolate::Interpolate )
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -66,7 +73,7 @@ install(DIRECTORY
 )
 
 install(TARGETS
-  trajectory_handler
+  controller
   DESTINATION lib/${PROJECT_NAME}
 )
 
