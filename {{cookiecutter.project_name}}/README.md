@@ -1,4 +1,6 @@
-# Synchronous Position Trajectory Controller
+# {{cookiecutter.project_name}}
+
+{{cookiecutter.short_description}}
 
 This project provides a synchonous simple position trajectory controller for ROS2, MAVROS and (currently) PX4 for multi-vehicle flight
 

@@ -34,7 +34,7 @@ jobs:
     needs: bump_version
     strategy:
       matrix:
-        targets: [position-trajectory-controller]
+        targets: [{{cookiecutter.project_name}}]
     steps:
       - name: Build Image
         uses: mhl787156/starling-bake-build-action@main

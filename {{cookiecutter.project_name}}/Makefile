@@ -3,29 +3,34 @@ BAKE_SCRIPT:=$(MAKEFILE_DIR)/buildtools/docker-bake.hcl
 BUILDX_HOST_PLATFORM:=$(shell docker buildx inspect default | sed -nE 's/^Platforms: ([^,]*),.*$$/\1/p')
 BAKE:=docker buildx bake --builder default --load --set *.platform=$(BUILDX_HOST_PLATFORM) -f $(BAKE_SCRIPT)
 
+IMAGE_NAME?={{cookiecutter.docker_image_name_full}}
 NETWORK?=bridge
 ENV?=
-BUILD_ARGS?=
 RUN_ARGS?=
 
+help:
+	@echo "all - run build"
+	@echo "build - build the dockerfile for this project"
+	@echo "run - builds and runs the dockerfile for this project"
+	@echo "run_bash - builds and runs the dockerfile putting you into a bash shell"
+	@echo "local-build-push - locally builds and pushes amd64 and arm64 variants of your container"
 
-all: position_trajectory_controller
+all: build
 
-position_trajectory_controller:
-	$(BAKE) position-trajectory-controller
+build:
+	$(BAKE) {{cookiecutter.project_name}}
 
-# This mybuilder needs the following lines to be run:
-# docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-# docker buildx create --name mybuilder
-# docker buildx use mybuilder
-# docker buildx inspect --bootstrap
 local-build-push:
-	docker buildx bake --builder mybuilder -f $(BAKE_SCRIPT) --push 4pl-controller
+	docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+	docker buildx create --name mybuilder
+	docker buildx use mybuilder
+	docker buildx inspect --bootstrap
+	docker buildx bake --builder mybuilder -f $(BAKE_SCRIPT) --push $(IMAGE_NAME)
 
-run: position_trajectory_controller
-	docker run -it --rm --net=$(NETWORK) $(ENV) -e USE_SIMULATED_TIME=true $(RUN_ARGS) uobflightlabstarling/position-trajectory-controller:latest
+run: build
+	docker run -it --rm --net=$(NETWORK) $(ENV) -e USE_SIMULATED_TIME=true $(RUN_ARGS) $(IMAGE_NAME)
 
-run_bash: position_trajectory_controller
-	docker run -it --rm --net=$(NETWORK) -e USE_SIMULATED_TIME=true $(RUN_ARGS) uobflightlabstarling/position-trajectory-controller:latest bash
+run_bash: build
+	docker run -it --rm --net=$(NETWORK) $(ENV) -e USE_SIMULATED_TIME=true $(RUN_ARGS) $(IMAGE_NAME) bash
 
-.PHONY: all position_trajectory_controller run run_bash
+.PHONY: all build local-build-push run run_bash

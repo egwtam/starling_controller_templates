@@ -21,8 +21,8 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          organisation: uobflightlabstarling
-          image: position-trajectory-controller
+          organisation: {{cookiecutter.docker_username}}
+          image: {{cookiecutter.docker_image_name}}
           tag: ${{github.event.pull_request.head.ref}}
 
 
