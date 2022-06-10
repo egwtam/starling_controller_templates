@@ -17,10 +17,6 @@ RUN wget https://raw.githubusercontent.com/mavlink/mavros/ros2/mavros/scripts/in
     && bash install_geographiclib_datasets.sh \
     && ln -s /usr/share/cmake/geographiclib/FindGeographicLib.cmake /usr/share/cmake-3.16/Modules/
 
-# Ensure colcon doesnt complain about git submodules and git
-COPY .git /ros_ws/src/.git
-COPY .gitmodules /ros_ws/src/.gitmodules
-
 # Copies all the nodes into the container
 COPY {{cookiecutter.project_name}} /ros_ws/src
 RUN . /opt/ros/${ROS_DISTRO}/setup.sh \

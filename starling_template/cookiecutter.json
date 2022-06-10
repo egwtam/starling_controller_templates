@@ -4,6 +4,7 @@
     "year": "2022",
     "short_description": "A Starling (https://github.com/StarlingUAS) compatible UAV controller using ROS2, Docker and Kubernetes",
     "project_name": "starling_controller",
+    "github_username": "starling123",
     "docker_username": "starling123",
     "docker_image_name": "{{cookiecutter.project_name|replace('_', '-')}}",
     "docker_image_name_full": "{{cookiecutter.docker_username}}/{{cookiecutter.docker_image_name}}" 

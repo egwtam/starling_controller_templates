@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(synchronous_msgs)
+project({{cookiecutter.package_name}})
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -26,8 +26,7 @@ find_package(builtin_interfaces REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/NotifyDelay.msg"
-  "msg/NotifyPause.msg"
+  "msg/TargetAngle.msg"
   DEPENDENCIES builtin_interfaces
 )
 

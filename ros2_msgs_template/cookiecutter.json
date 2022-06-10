@@ -1,3 +1,7 @@
 {
-    "node_name": "msgs_template_node"
+    "full_name": "starling_user",
+    "year": "2022",
+    "email": "starling.user@starling.co.uk",
+    "package_name": "template_msgs",
+    "short_description": "A set of templated ROS2 messages"
 }
