@@ -1,3 +1,4 @@
+{% raw %}
 name: 'Update images'
 
 on: [push]
@@ -34,7 +35,9 @@ jobs:
     needs: bump_version
     strategy:
       matrix:
+{% endraw %}
         targets: [{{cookiecutter.project_name}}]
+{% raw %}
     steps:
       - name: Build Image
         uses: mhl787156/starling-bake-build-action@main
@@ -59,5 +62,4 @@ jobs:
           tag: ${{ needs.bump_version.outputs.tag }}
           name: Release ${{ needs.bump_version.outputs.tag }}
           allowUpdates: true
-
-          
+{% endraw %}

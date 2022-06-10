@@ -1,0 +1,1 @@
+# Starling Template Controller Generator

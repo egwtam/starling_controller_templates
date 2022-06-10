@@ -1,5 +1,5 @@
 name: Close Pull Request and Delete Testing Image
-
+{% raw %}
 # only trigger on pull request closed events except for master and dev
 on:
   pull_request:
@@ -21,8 +21,11 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
+{% endraw %}
           organisation: {{cookiecutter.docker_username}}
           image: {{cookiecutter.docker_image_name}}
+{% raw %}
           tag: ${{github.event.pull_request.head.ref}}
+{% endraw %}
 
 
