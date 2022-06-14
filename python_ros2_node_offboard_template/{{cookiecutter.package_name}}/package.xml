@@ -19,6 +19,7 @@
 
   <!-- List custom message dependencies here -->
   <!-- <exec_depend>ros2_msgs_template</exec_depend> -->
+  <exec_depend>{{cookiecutter.custom_ros2_msgs_name}}</exec_depend>
 
   <export>
     <build_type>ament_python</build_type>

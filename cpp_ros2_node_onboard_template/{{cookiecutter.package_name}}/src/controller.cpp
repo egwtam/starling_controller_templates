@@ -36,10 +36,38 @@ void UserController::reset() {
 }
 
 bool UserController::smGoToStart(const rclcpp::Time& stamp) {
-    return false;
+    return true;
 }
 
 bool UserController::smExecute(const rclcpp::Time& stamp, const rclcpp::Duration& time_elapsed) {
+    // Get Time Elapsed Since State Change
+    double time_elapsed_sec = time_elapsed.seconds();
+
+    // Get Current Vehicle Location and Send It To Central Server
+    auto current_pos = this->node->vehicle_local_position;
+    double current_theta = atan2(current_pos->pose.position.y - this->origin.y, current_pos->pose.position.x - this->origin.x);
+    {{cookiecutter.custom_ros2_msgs_name}}::msg::TargetAngle msg;
+    msg.vehicle_id = this->node->vehicle_id;
+    msg.time = stamp;
+    msg.theta = current_theta;
+    this->notify_angle_pub->publish(msg);
+
+    // Get Angular (Theta) Velocity
+    double angular_vel = this->vehicle_velocity / circle_radius;
+
+    // Amount of theta vehicle should have moved
+    this->vehicle_setpoint_theta = fmod(time_elapsed_sec * angular_vel, 2*M_PI); 
+
+    // Convert theta to coordinate location
+    double x = this->circle_radius * cos(this->vehicle_setpoint_theta) + this->origin.x;
+    double y = this->circle_radius * sin(this->vehicle_setpoint_theta) + this->origin.y;
+    double z = this->height + this->origin.z;
+    double yaw = this->vehicle_setpoint_theta;
+
+    // Tell Vehicle to go to coordinate location
+    this->node->sendSetpointPositionCoordinate(stamp, x, y, z, yaw);
+
+    // State Machine never exists by giving false.
     return false;
 }
 
@@ -53,15 +81,17 @@ void UserController::handleNotifyVehicles(const {{cookiecutter.custom_ros2_msgs_
         this->system_vehicle_id = s->vehicle_id;
 
         double start_target_theta = 2 * M_PI * s->vehicle_id / s->total_vehicles;
-        double startx = this->circle_radius * cos(start_target_theta);
-        double starty = this->circle_radius * sin(start_target_theta);
-        double startz = this->height;
+        double startx = this->circle_radius * cos(start_target_theta) + this->origin.x;
+        double starty = this->circle_radius * sin(start_target_theta) + this->origin.y;
+        double startz = this->height + this->origin.z;
         double startyaw = start_target_theta;
 
         auto loc = std::make_shared<trajectory_msgs::msg::JointTrajectoryPoint>();
         std::vector<double> pos = {startx, starty, startz, startyaw};
         loc->positions = pos;
         this->node->start_trajectory_location = loc;
+
+        this->vehicle_setpoint_theta = start_target_theta;
     }
 
 }

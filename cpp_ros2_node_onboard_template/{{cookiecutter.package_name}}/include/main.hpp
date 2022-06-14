@@ -90,7 +90,10 @@ class UAVController : public rclcpp::Node
         void sendSetpointPositionPose(const rclcpp::Time& stamp, const std::shared_ptr<geometry_msgs::msg::PoseStamped> pose);
         void handleLocalPosition(const geometry_msgs::msg::PoseStamped::SharedPtr s);
 
+        // Useful public variables
+        std::string vehicle_id;
         std::shared_ptr<trajectory_msgs::msg::JointTrajectoryPoint> start_trajectory_location;
+        std::shared_ptr<geometry_msgs::msg::PoseStamped> vehicle_local_position;
     private: 
 
         std::shared_ptr<UserController> user_controller;
@@ -112,7 +115,7 @@ class UAVController : public rclcpp::Node
         std::vector<_1D::AnyInterpolator<double>> interpolators;
 
         // External parameters
-        std::string vehicle_id;
+        // std::string vehicle_id;
         std::string frame_id = "map";           // Default Frame of reference
         double execution_frequency;             // Setpoint frequency
         double transform_broadcast_frequency;  // Transform Broadcast frequency
@@ -152,7 +155,7 @@ class UAVController : public rclcpp::Node
         std::shared_ptr<mavros_msgs::msg::State> vehicle_state;
         std::shared_ptr<mavros_msgs::msg::State> prev_vehicle_state;
         rclcpp::Time last_received_vehicle_local_position;
-        std::shared_ptr<geometry_msgs::msg::PoseStamped> vehicle_local_position;
+        // std::shared_ptr<geometry_msgs::msg::PoseStamped> vehicle_local_position;
         std::shared_ptr<geometry_msgs::msg::PoseStamped> vehicle_setpoint;
 
         // TF Broadcasting

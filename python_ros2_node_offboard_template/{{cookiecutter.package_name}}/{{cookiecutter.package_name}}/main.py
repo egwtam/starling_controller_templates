@@ -6,32 +6,53 @@ from functools import partial
 import rclpy
 from rclpy.node import Node
 
-from synchronous_msgs.msg import NotifyDelay, NotifyPause
+from {{cookiecutter.custom_ros2_msgs_name}}.msg import NotifyVehicles, TargetAngle
 
 
 class Monitor(Node):
 
     def __init__(self):
         super().__init__('sync_monitor')
-        self.notify_delay_sub = self.create_subscription(NotifyDelay, '/monitor/notify_delay', self.notify_delay_cb, 10)
+
+        self.angle_timeout = rclpy.Duration(seconds=0.3)
+
+        self.notify_delay_sub = self.create_subscription(TargetAngle, '/monitor/notify_angle', self.notify_angle_cb, 10)
+        self.notify_vehicles_timer = self.create_timer(1, self.notfy_vehicles_timer_cb)
+
+        self.current_vehicle_map = {}
+        self.vehicle_theta_map = {}
+
         self.get_logger().info("Initialised")
+    
+    def notify_vehicles_timer_cb(self):
+        curr_time = self.get_clock().now().to_msg()
 
-    def notify_delay_cb(self, msg):
-        self.get_logger().info(f'Delay received from {msg.vehicle_id}, with delay {msg.delay} expected at {msg.expected_arrival_time}, arrived at {msg.actual_arrival_time}')
+        vehicles = self.__get_current_vehicle_namespaces()
+        self.current_vehicle_map = dict(enumerate(sorted(vehicles)))
 
-        p_msg = NotifyPause()
-        p_msg.delayed_vehicle_id = msg.vehicle_id
-        p_msg.delay = msg.delay
+        msg = NotifyVehicles()
+        msg.header.stamp = self.get_clock().now().to_msg()
+        msg.total_vehicles = len(self.current_vehicle_map)
 
-        for vname in self.__get_current_vehicle_namespaces():
-            if vname == msg.vehicle_id:
-                continue
+        s_msg = TargetAngle()
+        for vname, id in self.current_vehicle_map.items():
+            msg.vehicle_id = id
 
-            topic = f'/{vname}/notify_pause'
-            delay_pub = self.create_publisher(NotifyPause, topic, 10)
-            delay_pub.publish(p_msg)
+            topic = f'/{vname}/notify_vehicles'
+            pub = self.create_publisher(NotifyVehicles, topic, 10)
+            pub.publish(msg)
+            self.get_logger().info(f'Sent Vehicle Notfication to {topic}')
 
-            self.get_logger().info(f'Forwarded pause message to {topic}')
+            if vname in self.vehicle_theta_map:
+                arr_time, theta = self.vehicle_theta_map[vname]
+                if curr_time - arr_time > self.angle_timeout:
+                    continue
+                
+
+    def notify_angle_cb(self, msg):
+        self.get_logger().info(f'Delay received from {msg.vehicle_id}, with delay {msg.theta}')
+        self.vehicle_theta_map[msg.vehicle_id] = (msg.time, msg.theta)
+
 
     def __get_current_vehicle_namespaces(self):
         topic_list = self.get_topic_names_and_types()
