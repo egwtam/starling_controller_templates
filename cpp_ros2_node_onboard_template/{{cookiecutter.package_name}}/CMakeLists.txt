@@ -33,6 +33,8 @@ find_package(Boost REQUIRED COMPONENTS system)
 find_package(GeographicLib REQUIRED)
 find_package(libInterpolate REQUIRED)
 
+find_package({{cookiecutter.custom_ros2_msgs_name}} REQUIRED)
+
 # Add extra custom messages here
 # find_package(template_msgs REQUIRED)
 
@@ -47,6 +49,7 @@ add_executable(controller ${SRC_FILES} ${HEADER_FILES})
 ament_target_dependencies(controller
   rclcpp std_msgs std_srvs trajectory_msgs
   mavros_msgs geometry_msgs tf2 tf2_ros 
+  {{cookiecutter.custom_ros2_msgs_name}}
   # template_msgs
 )
 target_include_directories(controller PRIVATE include)

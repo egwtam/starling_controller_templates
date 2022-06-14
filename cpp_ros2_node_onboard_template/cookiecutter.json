@@ -3,5 +3,6 @@
     "year": "2022",
     "email": "starling.user@starling.co.uk",
     "package_name": "template_cpp_node",
-    "short_description": "CPP ROS2 node template"
+    "short_description": "CPP ROS2 node template",
+    "custom_ros2_msgs_name": "template_msgs"
 }

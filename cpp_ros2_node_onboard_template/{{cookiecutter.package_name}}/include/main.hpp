@@ -37,9 +37,6 @@
 #include <tf2/convert.h>
 #include <tf2_ros/transform_broadcaster.h>
 
-// #include "synchronous_msgs/msg/notify_delay.hpp"
-// #include "synchronous_msgs/msg/notify_pause.hpp"
-
 #include "mavros_msgs/msg/state.hpp"
 #include "mavros_msgs/msg/position_target.hpp"
 #include "mavros_msgs/msg/attitude_target.hpp"
@@ -53,75 +50,21 @@
 #include <libInterpolate/Interpolate.hpp>
 #include <libInterpolate/AnyInterpolator.hpp>
 
+#include "state.hpp"
+
 using namespace std;
 using namespace rclcpp;
 
 #define PX4_OFFBOARD_MODE "OFFBOARD"
 #define PX4_LAND_MODE "AUTO.LAND"
 
-class State{
-    public:
-        enum Value: uint8_t {
-            INIT,
-            TAKEOFF,
-            GOTOSTART,
-            LAND,
-            STOP,
-            EXECUTE,
-            MAKESAFE,
-            TERMINATE,
-        };
+class UserController;
 
-    State() = default;
-    constexpr State(Value state) : value(state) { }
-
-    // Allow switch and comparisons.
-    constexpr operator Value() const { return value; }
-
-    // Prevent usage: if(fruit)
-    explicit operator bool() = delete;
-
-    constexpr bool operator==(State a) const { return value == a.value; }
-    constexpr bool operator!=(State a) const { return value != a.value; }
-
-    constexpr bool operator==(State::Value a) const { return value == a; }
-    constexpr bool operator!=(State::Value a) const { return value != a; }
-
-
-    string to_string() const {
-        switch(value){
-            case INIT:
-                return "STATE::INIT";
-            case TAKEOFF:
-                return "STATE::TAKEOFF";
-            case GOTOSTART:
-                return "STATE::GOTOSTART";
-            case LAND:
-                return "STATE::LAND";
-            case STOP:
-                return "STATE::STOP";
-            case EXECUTE:
-                return "STATE::EXECUTE";
-            case TERMINATE:
-                return "STATE::TERMINATE";
-            case MAKESAFE:
-                return "STATE::MAKESAFE";
-            default:
-                return "INVALID_STATE";
-        };
-    }
-
-    private:
-        Value value;
-};
-
-class TrajectoryHandler : public rclcpp::Node
+class UAVController : public rclcpp::Node
 {
     public:
-        TrajectoryHandler();
-        // void submitTrajectory(std::shared_ptr<simple_offboard_msgs::srv::SubmitTrajectory::Request> req, std::shared_ptr<simple_offboard_msgs::srv::SubmitTrajectory::Response> res);
+        UAVController();
 
-    private:
         void reset();
         void resetExecutionTimer(bool restart=true);
         void stateMachine(const rclcpp::Time& stamp);
@@ -134,8 +77,7 @@ class TrajectoryHandler : public rclcpp::Node
         bool smGoToStart(const rclcpp::Time& stamp);
         bool smLandVehicle(const rclcpp::Time& stamp);
         bool smMakeSafe(const rclcpp::Time& stamp);
-        bool smExecuteTrajectory(const rclcpp::Time& stamp);
-        void gotoTrajectoryPoint(const trajectory_msgs::msg::JointTrajectoryPoint& point);
+        bool smExecute(const rclcpp::Time& stamp);
         bool missionGoPressed(const rclcpp::Time&stamp);
 
         // Helper utility functions
@@ -148,7 +90,10 @@ class TrajectoryHandler : public rclcpp::Node
         void sendSetpointPositionPose(const rclcpp::Time& stamp, const std::shared_ptr<geometry_msgs::msg::PoseStamped> pose);
         void handleLocalPosition(const geometry_msgs::msg::PoseStamped::SharedPtr s);
 
-        // void handleNotifyPause(const synchronous_msgs::msg::NotifyPause::SharedPtr msg);
+        std::shared_ptr<trajectory_msgs::msg::JointTrajectoryPoint> start_trajectory_location;
+    private: 
+
+        std::shared_ptr<UserController> user_controller;
 
         // Mission parameters
         std::shared_ptr<rclcpp::Time> mission_start_receive_time;
@@ -193,13 +138,6 @@ class TrajectoryHandler : public rclcpp::Node
 
         std::chrono::duration<double> mission_start_receive_timeout;
 
-        // Sync Parameters
-        rclcpp::Duration next_delay = rclcpp::Duration::from_seconds(0.0);
-        rclcpp::Duration sync_cumulative_delay = rclcpp::Duration::from_seconds(0.0);
-        std::map<string, rclcpp::Duration> vehicle_delays;
-        uint8_t current_task_idx;
-        std::shared_ptr<rclcpp::Time> sync_wait_until;
-
         // Go To Start Interpolator
         double gotostart_velocity;
         double time_req;
@@ -207,9 +145,7 @@ class TrajectoryHandler : public rclcpp::Node
 
         // Takeoff and Landing parameters
         double takeoff_height;
-        trajectory_msgs::msg::JointTrajectoryPoint start_trajectory_location;
         std::shared_ptr<geometry_msgs::msg::PoseStamped> takeoff_location;
-
 
         // Vehicle State
         rclcpp::Time last_received_vehicle_state;
@@ -227,15 +163,13 @@ class TrajectoryHandler : public rclcpp::Node
 
         // Publishers
         rclcpp::Publisher<geometry_msgs::msg::PoseStamped>::SharedPtr       setpoint_position_pub;
-        // rclcpp::Publisher<synchronous_msgs::msg::NotifyDelay>::SharedPtr       sync_delay_pub;
 
         // Subscriptions
         rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr               mission_start_sub;
         rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr               mission_abort_sub;
         rclcpp::Subscription<std_msgs::msg::Empty>::SharedPtr               estop_sub;
-        rclcpp::Subscription<mavros_msgs::msg::State>::SharedPtr         state_sub;
-        rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr                     local_position_sub;
-        // rclcpp::Subscription<synchronous_msgs::msg::NotifyPause>::SharedPtr                     sync_pause_sub;
+        rclcpp::Subscription<mavros_msgs::msg::State>::SharedPtr            state_sub;
+        rclcpp::Subscription<geometry_msgs::msg::PoseStamped>::SharedPtr    local_position_sub;
 
         // Clients
         rclcpp::Client<mavros_msgs::srv::CommandBool>::SharedPtr        mavros_arming_srv;
