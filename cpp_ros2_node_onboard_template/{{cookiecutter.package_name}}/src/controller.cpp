@@ -27,15 +27,22 @@ UserController::UserController(UAVController *node) {
         "notify_vehicles", 10,
         std::bind(&UserController::handleNotifyVehicles, this, std::placeholders::_1));
 
+    this->node->get_parameter_or("sync_angle_P", this->sync_angle_P, 0.1);
+
     // Variables
     this->origin = geometry_msgs::msg::Point();
 }
 
 void UserController::reset() {
     this->system_vehicle_id = 0;
+    this->received_circle_id = false;
 }
 
-bool UserController::smGoToStart(const rclcpp::Time& stamp) {
+bool UserController::smReady(const rclcpp::Time& stamp) {
+    if (!this->received_circle_id) {
+        RCLCPP_INFO(this->get_logger(), "Waiting for Notify Vehicle message from central monitor");
+        return false;
+    }
     return true;
 }
 
@@ -55,8 +62,8 @@ bool UserController::smExecute(const rclcpp::Time& stamp, const rclcpp::Duration
     // Get Angular (Theta) Velocity
     double angular_vel = this->vehicle_velocity / circle_radius;
 
-    // Amount of theta vehicle should have moved
-    this->vehicle_setpoint_theta = fmod(time_elapsed_sec * angular_vel, 2*M_PI); 
+    // Amount of theta vehicle should have moved w.r.t to start location
+    this->vehicle_setpoint_theta = fmod(this->vehicle_start_theta + time_elapsed_sec * angular_vel, 2*M_PI); 
 
     // Convert theta to coordinate location
     double x = this->circle_radius * cos(this->vehicle_setpoint_theta) + this->origin.x;
@@ -67,12 +74,17 @@ bool UserController::smExecute(const rclcpp::Time& stamp, const rclcpp::Duration
     // Tell Vehicle to go to coordinate location
     this->node->sendSetpointPositionCoordinate(stamp, x, y, z, yaw);
 
+    RCLCPP_INFO(this->get_logger(), "Vehicle going to (%f, %f, %f), theta: %f",
+        x, y, z, yaw
+    );
+
     // State Machine never exists by giving false.
     return false;
 }
 
 void UserController::handleTargetAngle(const {{cookiecutter.custom_ros2_msgs_name}}::msg::TargetAngle::SharedPtr s) {
-
+    double theta_diff = this->vehicle_setpoint_theta - s->theta;
+    this->vehicle_velocity += this->sync_angle_P * theta_diff;
 }
 
 void UserController::handleNotifyVehicles(const {{cookiecutter.custom_ros2_msgs_name}}::msg::NotifyVehicles::SharedPtr s) {
@@ -92,6 +104,8 @@ void UserController::handleNotifyVehicles(const {{cookiecutter.custom_ros2_msgs_
         this->node->start_trajectory_location = loc;
 
         this->vehicle_setpoint_theta = start_target_theta;
+        this->vehicle_start_theta = start_target_theta;
+        this->received_circle_id = true;
     }
 
 }

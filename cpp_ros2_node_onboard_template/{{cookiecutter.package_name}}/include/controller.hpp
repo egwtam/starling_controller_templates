@@ -37,7 +37,7 @@ class UserController
         void reset();
 
         // User Controller Checking If The Start Location is Registered
-        bool smGoToStart(const rclcpp::Time& stamp);
+        bool smReady(const rclcpp::Time& stamp);
 
         // User Controller Execute One Control Loop
         bool smExecute(const rclcpp::Time& stamp, const rclcpp::Duration& time_elapsed);
@@ -67,11 +67,18 @@ class UserController
         geometry_msgs::msg::Point origin;
         const double circle_radius = 1.5; // In meters
         const double height = 1.0;
-        const double vehicle_velocity = 0.5;
         uint8_t system_vehicle_id;
 
+        // Received initial positions
+        bool received_circle_id = false;
+
         // Dynamic Variables
+        double vehicle_start_theta;
         double vehicle_setpoint_theta; 
+
+        // Control on velocity
+        double sync_angle_P;
+        double vehicle_velocity = 0.5;
 };
 
 #endif

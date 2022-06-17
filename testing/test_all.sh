@@ -10,6 +10,5 @@ cookiecutter "$WORKDIR" --directory python_ros2_node_offboard_template --no-inpu
 cookiecutter "$WORKDIR" --directory cpp_ros2_node_onboard_template --no-input -f -o "${OUTDIR}/starling_controller/starling_controller"
 cookiecutter "$WORKDIR" --directory ros2_msgs_template --no-input -f -o "${OUTDIR}/starling_controller/starling_controller"
 
-
 echo "Building CookieCutter Directory"
-make -C "$OUTDIR/starling_controller" build
+make -C "$OUTDIR/starling_controller" "$@"

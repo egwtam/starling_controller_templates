@@ -100,7 +100,7 @@ UAVController::UAVController() :
     this->user_controller = std::make_shared<UserController>(this);
 
     this->reset();
-    RCLCPP_INFO(this->get_logger(), "Controller initialised, waiting for requests on 'submit_trajectory' service.");
+    RCLCPP_INFO(this->get_logger(), "Controller initialised");
 }
 
 void UAVController::emergency_stop() {
@@ -188,8 +188,8 @@ void UAVController::reset(){
     this->interpolators.clear();
     this->gotostart_interpolators.clear();
 
-    // Stop Execution Timer
-    this->resetExecutionTimer(false);
+    // Restart Execution Timer
+    this->resetExecutionTimer(true);
 
     RCLCPP_INFO(this->get_logger(), "Reset Internal Parameters and Trajectory Executor");
 }
@@ -213,13 +213,13 @@ bool UAVController::missionGoPressed(const rclcpp::Time&stamp) {
 
 void UAVController::stateMachine(const rclcpp::Time& stamp){
 
-        auto previous_state = this->execution_state;
+    auto previous_state = this->execution_state;
 
-        // Check if terminating
-        if(this->execution_state == State::TERMINATE) {
-            this->reset();
-            return;
-        }
+    // Check if terminating
+    if(this->execution_state == State::TERMINATE) {
+        this->reset();
+        return;
+    }
 
     try{
 
@@ -247,6 +247,8 @@ void UAVController::stateMachine(const rclcpp::Time& stamp){
                 this->smOffboardArmed(stamp);
                 if(!this->smTakeoffVehicle(stamp)) {
                     RCLCPP_INFO(this->get_logger(), "Waiting for Takeoff");
+                } else if (!this->user_controller->smReady(stamp)) {
+                    RCLCPP_INFO(this->get_logger(), "Takeoff Complete Waiting for User Controller Ready");
                 } else if (!this->missionGoPressed(stamp)) {
                     RCLCPP_INFO(this->get_logger(), "Takeoff Complete Waiting on Mission Start");
                 } else {
@@ -313,10 +315,12 @@ void UAVController::stateMachine(const rclcpp::Time& stamp){
 
 bool UAVController::smChecks(const rclcpp::Time& stamp) {
     if(!vehicle_state || stamp - this->last_received_vehicle_state > this->state_timeout) {
+        RCLCPP_WARN(this->get_logger(), "Waiting for vehicle state data");
         // State timeout
         return false;
     }
     if(!vehicle_local_position || stamp - this->last_received_vehicle_local_position > this->local_position_timeout) {
+        RCLCPP_WARN(this->get_logger(), "Waiting for local position data");
         // Local Position Timeout
         return false;
     }
@@ -431,11 +435,13 @@ bool UAVController::smTakeoffVehicle(const rclcpp::Time& stamp) {
 
 bool UAVController::smGoToStart(const rclcpp::Time& stamp) {
 
-    // Check whether user controller has registered a start location
-    if (!this->user_controller->smGoToStart(stamp)) {
-        RCLCPP_WARN(this->get_logger(), "Waiting for user controller GoToStart");
+    // Check if start location has been set
+    if (!this->start_trajectory_location) {
+        RCLCPP_ERROR(this->get_logger(), "No start location set for go to start, aborting");
+        this->execution_state = State::STOP;
         return false;
     }
+
 
     rclcpp::Duration time_elapsed = stamp - this->start_time;
     double time_elapsed_sec = time_elapsed.seconds();
@@ -443,12 +449,6 @@ bool UAVController::smGoToStart(const rclcpp::Time& stamp) {
     // Add interpolator here?
     if (!this->gotostart_attempt_start) {
         this->gotostart_attempt_start = std::make_shared<rclcpp::Time>(stamp);
-
-        // Check if start location has been set
-        if (!this->start_trajectory_location) {
-            RCLCPP_WARN(this->get_logger(), "No start location set for go to start");
-            return false;
-        }
 
         // Vehicle Pose
         auto pose = this->vehicle_local_position->pose;
