@@ -8,6 +8,7 @@ from scipy.stats import circmean
 import rclpy
 from rclpy.node import Node
 from rclpy.duration import Duration
+from rclpy.time import Time
 
 from {{cookiecutter.custom_ros2_msgs_name}}.msg import NotifyVehicles, TargetAngle
 
@@ -20,7 +21,7 @@ class Monitor(Node):
         self.angle_timeout = Duration(seconds=0.3)
 
         self.notify_delay_sub = self.create_subscription(TargetAngle, '/monitor/notify_angle', self.notify_angle_cb, 10)
-        self.notify_vehicles_timer = self.create_timer(1, self.notify_vehicles_timer_cb)
+        self.notify_vehicles_timer = self.create_timer(1.0, self.notify_vehicles_timer_cb)
 
         # map between vehicle and ordering id around the circle
         # Updated by observing current ROS topics
@@ -33,10 +34,10 @@ class Monitor(Node):
         self.get_logger().info("Initialised")
     
     def notify_vehicles_timer_cb(self):
-        curr_time = self.get_clock().now().to_msg()
+        curr_time = self.get_clock().now()
 
         vehicles = self.__get_current_vehicle_namespaces()
-        self.current_vehicle_map = dict(enumerate(sorted(vehicles)))
+        self.current_vehicle_map = {k:v for v, k in enumerate(sorted(vehicles))}
         num_vehicles = len(self.current_vehicle_map)
 
         if num_vehicles == 0:
@@ -45,20 +46,22 @@ class Monitor(Node):
         
         # Check if any current vehicle thetas are out of date and delete them if so
         for vname in self.current_vehicle_map.keys():
-            arr_time, theta = self.vehicle_theta_map[vname]
-            if curr_time - arr_time > self.angle_timeout:
-                del self.vehicle_theta_map[vname]
+            if vname in self.vehicle_theta_map:
+                arr_time, theta = self.vehicle_theta_map[vname]
+                if curr_time - arr_time > self.angle_timeout:
+                    del self.vehicle_theta_map[vname]
 
         # Find circular average of all vehicles using current theta map
         vname_to_circ_average = self.circular_mean_vehicles()
+        # self.get_logger().info(f"v2t: {self.vehicle_theta_map}")
+        # self.get_logger().info(f"v2ta: {vname_to_circ_average}")
 
         msg = NotifyVehicles()
-        msg.header.stamp = self.get_clock().now().to_msg()
+        msg.header.stamp = curr_time.to_msg()
         msg.total_vehicles = num_vehicles
-
  
         for vname, id in self.current_vehicle_map.items():
-            msg.vehicle_id = id
+            msg.vehicle_id = int(id)
             topic = f'/{vname}/notify_vehicles'
             pub = self.create_publisher(NotifyVehicles, topic, 10)
             pub.publish(msg)
@@ -71,15 +74,15 @@ class Monitor(Node):
                 s_msg.theta = vname_to_circ_average[vname]
                 topic = f'/{vname}/sync_angle'
                 pub  = self.create_publisher(TargetAngle, topic, 10)
-                pub.publish(msg)
-                self.get_logger().info(f'Sent sync angle to {topic}')
+                pub.publish(s_msg)
+                self.get_logger().info(f'Sent sync angle to {topic} : {s_msg}')
 
     def notify_angle_cb(self, msg):
-        self.get_logger().info(f'Delay received from {msg.vehicle_id}, with delay {msg.theta}')
-        self.vehicle_theta_map[msg.vehicle_id] = (msg.time, msg.theta)
+        self.get_logger().info(f'Theta received from {msg.vehicle_id}, at theta {msg.theta}')
+        self.vehicle_theta_map[msg.vehicle_id] = (Time.from_msg(msg.time), msg.theta)
     
     def circular_mean_vehicles(self):
-        num_vehicles = len(self.vehicle_theta_map)
+        num_vehicles = len(self.current_vehicle_map)
         delta_theta = 2 * np.pi / num_vehicles
         vehicle_ordering = sorted(self.current_vehicle_map, key=self.current_vehicle_map.get)
         # Idea find ideal locations relative to each vehicle, take circular mean and send that to vehicles
@@ -93,7 +96,7 @@ class Monitor(Node):
                 ideal_theta = (t + delta_theta * i)
                 ideal_theta_relative_to_each_vehicle[vname].append(ideal_theta)
 
-        return {v: circmean(ts) for v, ts in ideal_theta_relative_to_each_vehicle.items()}
+        return {v: circmean(ts) for v, ts in ideal_theta_relative_to_each_vehicle.items() if len(ts) > 0}
 
     def __get_current_vehicle_namespaces(self):
         topic_list = self.get_topic_names_and_types()

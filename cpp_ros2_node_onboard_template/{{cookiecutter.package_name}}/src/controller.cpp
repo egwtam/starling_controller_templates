@@ -27,7 +27,7 @@ UserController::UserController(UAVController *node) {
         "notify_vehicles", 10,
         std::bind(&UserController::handleNotifyVehicles, this, std::placeholders::_1));
 
-    this->node->get_parameter_or("sync_angle_P", this->sync_angle_P, 0.1);
+    this->node->get_parameter_or("sync_angle_P", this->sync_angle_P, 0.001);
 
     // Variables
     this->origin = geometry_msgs::msg::Point();
@@ -83,8 +83,13 @@ bool UserController::smExecute(const rclcpp::Time& stamp, const rclcpp::Duration
 }
 
 void UserController::handleTargetAngle(const {{cookiecutter.custom_ros2_msgs_name}}::msg::TargetAngle::SharedPtr s) {
-    double theta_diff = this->vehicle_setpoint_theta - s->theta;
-    this->vehicle_velocity += this->sync_angle_P * theta_diff;
+    if (!isnan(s->theta)) {
+        double theta_diff = this->vehicle_setpoint_theta - s->theta;
+        this->vehicle_velocity += this->sync_angle_P * theta_diff;
+        RCLCPP_INFO(this->get_logger(), "Received target angle of %f with diff %f so velocity of %f", s->theta, theta_diff, this->vehicle_velocity);
+    } else {
+        RCLCPP_INFO(this->get_logger(), "Received target angle [%f] is nan", s->theta);
+    }
 }
 
 void UserController::handleNotifyVehicles(const {{cookiecutter.custom_ros2_msgs_name}}::msg::NotifyVehicles::SharedPtr s) {
