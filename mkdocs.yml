@@ -1,0 +1,34 @@
+site_name: Starling Tutorial
+theme: readthedocs
+repo_url: https://github.com/StarlingUAS/starling_controller_templates/tree/implement_example
+site_description: 'Starling Tutorial'
+docs_dir: 'tutorial'
+copyright: Copyright &copy; 2022 University of Bristol Flight Laboratory
+
+markdown_extensions:
+  - toc:
+      permalink: True
+  - pymdownx.keys:
+      strict: True
+
+plugins:
+  - search
+  - macros
+  - enumerate-headings:
+      toc_depth: 3
+  - mermaid2
+
+nav:
+  - "Tutorial":
+    - "1. Getting Started ": 'getting_started.md'
+    - "2. ROS2 and UAV Control": 'ros2_uav.md'
+    - "3. Docker and Containerisation": "docker.md"
+    - "4. Creating your own Starling project": "creating.md"
+    - "5. Simulation and the Digital Double": "simulation.md"
+    - "6. Developing the example controller with ROS2 in CPP" : "cpp_example_dev.md"
+    - "7. Local testing with Docker-Compose": "testing_with_docker_compose.md"
+    - "8. Multi-UAV flight with Kubernetes for container deployment": "multiuav_kubernetes.md"
+    - "9. Local Integration testing with KinD Digital Double": "testing_with_kind.md"
+    - "10. Bristol Robotics Laboratory Flying Arena" : "brl.md"
+    - "11. Flying your controllers in the Flying Arena": "brl_flight.md"
+    - "12. Wrapping up and next steps": "next_steps.md"
