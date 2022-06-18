@@ -7,5 +7,7 @@
     "github_username": "starling123",
     "docker_username": "starling123",
     "docker_image_name": "{{cookiecutter.project_name|replace('_', '-')}}",
-    "docker_image_name_full": "{{cookiecutter.docker_username}}/{{cookiecutter.docker_image_name}}" 
+    "docker_image_name_full": "{{cookiecutter.docker_username}}/{{cookiecutter.docker_image_name}}",
+    "onboard_ros2_package_name": "template_cpp_node",
+    "offboard_ros2_package_name": "template_python_node"
 }

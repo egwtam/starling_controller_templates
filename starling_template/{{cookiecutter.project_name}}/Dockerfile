@@ -8,6 +8,7 @@ RUN apt-get update \
         git \
         wget \
         python3-pip \
+        python3-scipy \
         libgeographic-dev \
         geographiclib-tools \
         libeigen3-dev \
@@ -33,4 +34,5 @@ RUN . /opt/ros/${ROS_DISTRO}/setup.sh \
     && colcon build\
     && rm -r build
 
+COPY {{cookiecutter.project_name}}/run.sh /ros_ws
 CMD ["./run.sh"]

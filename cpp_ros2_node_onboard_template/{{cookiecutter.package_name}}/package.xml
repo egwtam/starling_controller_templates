@@ -24,6 +24,7 @@
   <!-- List custom message dependencies here -->
   <!-- <depend>ros2_msgs_template</depend> -->
 
+  <depend>{{cookiecutter.custom_ros2_msgs_name}}</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
