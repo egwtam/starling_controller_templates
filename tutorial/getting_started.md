@@ -11,39 +11,49 @@ For this tutorial, it will be assumed that you have a functional understanding o
 ## Prerequisits
 
 ### Git and Docker
+
 You will need to install [git](https://git-scm.com/downloads) to access the software and [docker](https://docs.docker.com/get-docker/) to run it.  These are both supported on Windows, Mac and Linux. The Docker Desktop application should also be suitable.
 
 > Linux users, please verify that the `docker-compose` tool is installed by running `docker-compose --version`. If it fails, install using `sudo apt-get install docker-compose-plugin`. [see here](https://docs.docker.com/compose/install/compose-plugin/#installing-compose-on-linux-systems).
 
 > Windows users, it is highly recommended that you also install the Windows Subsystem for Linux (WSL) and use that as the backend for your Docker installations. [see here for instructions](https://docs.docker.com/desktop/windows/wsl/)
 
+It is also recommended that you sign up for a github account and a dockerhub account.
+
 ### Murmuration - Starling Command Line Interface
 
 You will need to download the [Murmuration repository](https://github.com/StarlingUAS/Murmuration) which contains a useful command line interface (cli). This can hopefully abstract away the need to remember all of the different commands.
 
 To install, go to your work directory and clone the repository using the command line or gui and run the following commands:
+
 ```bash
 git clone https://github.com/StarlingUAS/Murmuration.git # clones locally
 cd Murmuration
 ```
+
 In the bin directory of the repository, there is the core cli script named `starling`. `starling` includes a further installation script to help install further requirements. This installation script will need to be run using root. See the following guide on which arguments you should give.
 
 > If running within Murmuration, swap `starling` for `./bin/starling`. However for convenience, you can put `starling` onto your path. This can be done by adding `export PATH=<Path to murmuration>/bin:$PATH` into `~/.bashrc` followed by `source ~/.bashrc` , or running the same command locally in the terminal. Then you can use the `starling`
 
 Then to finish the installation run:
+
 ```bash
+
 sudo starling install
 # or if you have not added starling to path and are in the Murmuration directory.
 sudo ./bin/starling install
 ```
 
 ### Cookiecutter
+
 The template generation uses the [`cookiecutter`](https://cookiecutter.readthedocs.io/en/stable/README.html) tool for generating custom projects from a template. To install, first install Python and then run the following:
+
 ```sh
 python3 -m pip install --user cookiecutter
 # or
 easy_install --user cookiecutter
 ```
+
 > See [cookiecutter installation](https://cookiecutter.readthedocs.io/en/stable/installation.html) for further details on different platforms.
 
 This will give you access to the `cookiecutter` command line interface.

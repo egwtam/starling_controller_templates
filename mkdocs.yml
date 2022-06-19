@@ -10,6 +10,11 @@ markdown_extensions:
       permalink: True
   - pymdownx.keys:
       strict: True
+  - mdx_math:
+      add_preview: True
+
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML
 
 plugins:
   - search
