@@ -301,6 +301,24 @@ If you want to start the offboard controller, you can add the extra option `ENV=
 
 You can have a look inside both container using `make run_bash`.
 
+## Initialising Git
+
+Optionally, at this point you can start version controller on your project in order to save your progress. To initalise git and create your first commit, go to the root of your project and run:
+
+```bash
+git init
+git add -A
+git commit -m "Initial Commit"
+```
+
+If you want to push this code onto github, you can follow [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-push-an-existing-project-to-github). In short, create an empty github repository of the same name in your github account, then change the remote locally:
+
+```bash
+git remote add origin <remote repository URL>
+git remote -v
+git push origin master
+```
+
 ## Next Steps
 
 Congratulations, you now have your own Starling application! It doesn't quite have any functionality just yet but before we get to adding some, it's important to understand how you run the simulation for you to test your controller against!
