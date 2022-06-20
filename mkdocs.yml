@@ -1,6 +1,6 @@
 site_name: Starling Tutorial
 theme: readthedocs
-repo_url: https://github.com/StarlingUAS/starling_controller_templates/tree/implement_example
+repo_url: https://github.com/StarlingUAS/starling_controller_templates/
 site_description: 'Starling Tutorial'
 docs_dir: 'tutorial'
 copyright: Copyright &copy; 2022 University of Bristol Flight Laboratory
