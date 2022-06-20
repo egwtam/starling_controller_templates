@@ -249,6 +249,13 @@ This opens up a terminal inside the container for you to navigate around and ins
 
 > *Note:* These containers have almost no tools to keep them slim. If you want to edit things, you will need to download a command line file editor. Run `apt-get update` then install an editor like `nano` with `apt-get install nano`.
 
+## Starling Mavros
+
+Finally, we bring in ros2 and uav control from the [previous tutorial](ros2_uav.md). In Starling, there exists a core container called `starling-mavros` which facilitates the communication between the user application and the UAV autopilot in simulation or reality.
+
+This container, which you have hopefully run above, uses a Mavros node is to translate between ROS2 for the user, and MAVLINK for the autopilot.
+
+We give examples of its use later on.
 
 ## Next Steps
 

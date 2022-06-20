@@ -3,8 +3,7 @@ version: '3'
 
 services:
   simhost: # Must be called simhost
-    # image: uobflightlabstarling/starling-sim-iris-px4-flightarena:latest
-    image: uobflightlabstarling/starling-sim-iris:nightly
+    image: uobflightlabstarling/starling-sim-iris-px4-flightarena:latest
     ports:
       - "8080:8080"
 
@@ -29,12 +28,12 @@ services:
       - simhost
     ports:
       - "5760:5760"
-    
+
   rosbridge-suite:
     image: uobflightlabstarling/rosbridge-suite:latest
     ports:
       - "9090:9090"
-      
+
   starling-ui-example:
     image: uobflightlabstarling/starling-ui-example:latest
     ports:
