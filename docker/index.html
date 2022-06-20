@@ -66,7 +66,9 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#next-steps">3.3 Next Steps</a>
+<li class="toctree-l2"><a class="reference internal" href="#starling-mavros">3.3 Starling Mavros</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">3.4 Next Steps</a>
 </li>
 </ul>
 </li>
@@ -133,7 +135,8 @@
 <li><a href="#inspecting-a-container">3.2.4 Inspecting a container</a></li>
 </ul>
 </li>
-<li><a href="#next-steps">3.3 Next Steps</a></li>
+<li><a href="#starling-mavros">3.3 Starling Mavros</a></li>
+<li><a href="#next-steps">3.4 Next Steps</a></li>
 </ul>
 </li>
 </ul>
@@ -287,7 +290,11 @@ root@81b7dfb6c443:/ros_ws#
 <p><em>Note:</em> Use the <code>cat</code> command to view the contents of files.</p>
 <p><em>Note:</em> These containers have almost no tools to keep them slim. If you want to edit things, you will need to download a command line file editor. Run <code>apt-get update</code> then install an editor like <code>nano</code> with <code>apt-get install nano</code>.</p>
 </blockquote>
-<h2 id="next-steps"><span class="enumerate-headings-plugin enumerate-heading-plugin">3.3</span> Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">¶</a></h2>
+<h2 id="starling-mavros"><span class="enumerate-headings-plugin enumerate-heading-plugin">3.3</span> Starling Mavros<a class="headerlink" href="#starling-mavros" title="Permanent link">¶</a></h2>
+<p>Finally, we bring in ros2 and uav control from the <a href="../ros2_uav/">previous tutorial</a>. In Starling, there exists a core container called <code>starling-mavros</code> which facilitates the communication between the user application and the UAV autopilot in simulation or reality.</p>
+<p>This container, which you have hopefully run above, uses a Mavros node is to translate between ROS2 for the user, and MAVLINK for the autopilot.</p>
+<p>We give examples of its use later on.</p>
+<h2 id="next-steps"><span class="enumerate-headings-plugin enumerate-heading-plugin">3.4</span> Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">¶</a></h2>
 <p>Hopefully you now have a decent understanding of what containerisation is and its purpose within Starling. You have also had a go at using the Docker command line tool to pull, run, build and inspect Starling containers going forward.</p>
 <p>With all that, we are now at a point where you can start creating your own containers to use!</p>
 </div>
