@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="../img/favicon.ico" rel="shortcut icon"/>
+<title>5. Simulation and the Digital Double - Starling Tutorial</title>
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" rel="stylesheet"/>
+<link href="../css/theme.css" rel="stylesheet">
+<link href="../css/theme_extra.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" rel="stylesheet"/>
+<script>
+    // Current page data
+    var mkdocs_page_name = "5. Simulation and the Digital Double";
+    var mkdocs_page_input_path = "simulation.md";
+    var mkdocs_page_url = null;
+  </script>
+<script defer="" src="../js/jquery-2.1.1.min.js"></script>
+<script defer="" src="../js/modernizr-2.8.3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</link></head>
+<body class="wy-body-for-nav" role="document">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href=".."> Starling Tutorial</a>
+<div role="search">
+<form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input name="q" placeholder="Search docs" title="Type search term here" type="text"/>
+</form>
+</div>
+</div>
+<div aria-label="main navigation" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<p class="caption"><span class="caption-text">Tutorial</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/">1. Getting Started </a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ros2_uav/">2. ROS2 and UAV Control</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docker/">3. Docker and Containerisation</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../creating/">4. Creating your own Starling project</a>
+</li>
+<li class="toctree-l1 current"><a class="reference internal current" href="./">5. Simulation and the Digital Double</a>
+<ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="#uav-simulation">5.1 UAV Simulation</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#gazebo">5.1.1 Gazebo</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#brl-digital-double">5.2 BRL Digital Double</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-local-simulator">5.3 Running the local simulator</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">5.4 Next Steps</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cpp_example_dev/">6. Developing the example controller with ROS2 in CPP</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../testing_with_docker_compose/">7. Local testing with Docker-Compose</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../multiuav_kubernetes/">8. Multi-UAV flight with Kubernetes for container deployment</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../testing_with_kind/">9. Local Integration testing with KinD Digital Double</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../brl/">10. Bristol Robotics Laboratory Flying Arena</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../brl_flight/">11. Flying your controllers in the Flying Arena</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../next_steps/">12. Wrapping up and next steps</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+<nav aria-label="top navigation" class="wy-nav-top" role="navigation">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="..">Starling Tutorial</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content">
+<div aria-label="breadcrumbs navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a href="..">Docs</a> »</li>
+<li>Tutorial »</li>
+<li>5. Simulation and the Digital Double</li>
+<li class="wy-breadcrumbs-aside">
+<a class="icon icon-github" href="https://github.com/StarlingUAS/starling_controller_templates/tree/implement_example/edit/master/docs/simulation.md"> Edit on GitHub</a>
+</li>
+</ul>
+<hr/>
+</div>
+<div role="main">
+<div class="section">
+<h1 id="simulation-and-the-digital-double"><span class="enumerate-headings-plugin enumerate-heading-plugin">5.</span> Simulation and the Digital Double<a class="headerlink" href="#simulation-and-the-digital-double" title="Permanent link">¶</a></h1>
+<div class="toc">
+<ul>
+<li><a href="#simulation-and-the-digital-double">5. Simulation and the Digital Double</a><ul>
+<li><a href="#uav-simulation">5.1 UAV Simulation</a><ul>
+<li><a href="#gazebo">5.1.1 Gazebo</a></li>
+</ul>
+</li>
+<li><a href="#brl-digital-double">5.2 BRL Digital Double</a></li>
+<li><a href="#running-the-local-simulator">5.3 Running the local simulator</a></li>
+<li><a href="#next-steps">5.4 Next Steps</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="uav-simulation"><span class="enumerate-headings-plugin enumerate-heading-plugin">5.1</span> UAV Simulation<a class="headerlink" href="#uav-simulation" title="Permanent link">¶</a></h2>
+<h3 id="gazebo"><span class="enumerate-headings-plugin enumerate-heading-plugin">5.1.1</span> Gazebo<a class="headerlink" href="#gazebo" title="Permanent link">¶</a></h3>
+<h2 id="brl-digital-double"><span class="enumerate-headings-plugin enumerate-heading-plugin">5.2</span> BRL Digital Double<a class="headerlink" href="#brl-digital-double" title="Permanent link">¶</a></h2>
+<h2 id="running-the-local-simulator"><span class="enumerate-headings-plugin enumerate-heading-plugin">5.3</span> Running the local simulator<a class="headerlink" href="#running-the-local-simulator" title="Permanent link">¶</a></h2>
+<h2 id="next-steps"><span class="enumerate-headings-plugin enumerate-heading-plugin">5.4</span> Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">¶</a></h2>
+</div>
+</div>
+<footer>
+<div aria-label="footer navigation" class="rst-footer-buttons" role="navigation">
+<a class="btn btn-neutral float-right" href="../cpp_example_dev/" title="6. Developing the example controller with ROS2 in CPP">Next <span class="icon icon-circle-arrow-right"></span></a>
+<a class="btn btn-neutral" href="../creating/" title="4. Creating your own Starling project"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+</div>
+<hr/>
+<div role="contentinfo">
+<!-- Copyright etc -->
+<p>Copyright © 2022 University of Bristol Flight Laboratory</p>
+</div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="versions" class="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span>
+<a class="fa fa-github" href="https://github.com/StarlingUAS/starling_controller_templates/tree/implement_example/" style="color: #fcfcfc"> GitHub</a>
+</span>
+<span><a href="../creating/" style="color: #fcfcfc">« Previous</a></span>
+<span><a href="../cpp_example_dev/" style="color: #fcfcfc">Next »</a></span>
+</span>
+</div>
+<script>var base_url = '..';</script>
+<script defer="" src="../js/theme_extra.js"></script>
+<script defer="" src="../js/theme.js"></script>
+<script defer="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script defer="" src="../search/main.js"></script>
+<script defer="">
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="../img/favicon.ico" rel="shortcut icon"/>
+<title>3. Docker and Containerisation - Starling Tutorial</title>
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" rel="stylesheet"/>
+<link href="../css/theme.css" rel="stylesheet">
+<link href="../css/theme_extra.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" rel="stylesheet"/>
+<script>
+    // Current page data
+    var mkdocs_page_name = "3. Docker and Containerisation";
+    var mkdocs_page_input_path = "docker.md";
+    var mkdocs_page_url = null;
+  </script>
+<script defer="" src="../js/jquery-2.1.1.min.js"></script>
+<script defer="" src="../js/modernizr-2.8.3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</link></head>
+<body class="wy-body-for-nav" role="document">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href=".."> Starling Tutorial</a>
+<div role="search">
+<form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input name="q" placeholder="Search docs" title="Type search term here" type="text"/>
+</form>
+</div>
+</div>
+<div aria-label="main navigation" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<p class="caption"><span class="caption-text">Tutorial</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/">1. Getting Started </a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ros2_uav/">2. ROS2 and UAV Control</a>
+</li>
+<li class="toctree-l1 current"><a class="reference internal current" href="./">3. Docker and Containerisation</a>
+<ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="#introduction">3.1 Introduction</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#what-is-containerisation-and-docker">3.1.1 What is Containerisation and Docker</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#docker-concepts-in-more-detail">3.1.2 Docker Concepts in more detail</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#starling-container-ecosystem">3.1.3 Starling Container Ecosystem</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#using-docker-with-starling">3.2 Using Docker with Starling</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#getting-and-running-containers">3.2.1 Getting and Running Containers</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-containers">3.2.2 Creating Containers</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#layer-caching">3.2.3 Layer Caching</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#inspecting-a-container">3.2.4 Inspecting a container</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">3.3 Next Steps</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../creating/">4. Creating your own Starling project</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../simulation/">5. Simulation and the Digital Double</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cpp_example_dev/">6. Developing the example controller with ROS2 in CPP</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../testing_with_docker_compose/">7. Local testing with Docker-Compose</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../multiuav_kubernetes/">8. Multi-UAV flight with Kubernetes for container deployment</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../testing_with_kind/">9. Local Integration testing with KinD Digital Double</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../brl/">10. Bristol Robotics Laboratory Flying Arena</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../brl_flight/">11. Flying your controllers in the Flying Arena</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../next_steps/">12. Wrapping up and next steps</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+<nav aria-label="top navigation" class="wy-nav-top" role="navigation">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="..">Starling Tutorial</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content">
+<div aria-label="breadcrumbs navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a href="..">Docs</a> »</li>
+<li>Tutorial »</li>
+<li>3. Docker and Containerisation</li>
+<li class="wy-breadcrumbs-aside">
+<a class="icon icon-github" href="https://github.com/StarlingUAS/starling_controller_templates/tree/implement_example/edit/master/docs/docker.md"> Edit on GitHub</a>
+</li>
+</ul>
+<hr/>
+</div>
+<div role="main">
+<div class="section">
+<h1 id="docker-and-containerisation"><span class="enumerate-headings-plugin enumerate-heading-plugin">3.</span> Docker and Containerisation<a class="headerlink" href="#docker-and-containerisation" title="Permanent link">¶</a></h1>
+<p>This tutorial gives a brief introduction to a key element of Starling - containerisation. By the end you will hopefully have an idea of what containerisation is, what docker is, how to use it, and how we use it within Starling.</p>
+<blockquote>
+<p>This is adapted from the <a href="https://docs.duckietown.org/DT19/software_devel/out/docker_intro.html">Duckietown Docker Docs</a>, <a href="https://docs.docker.com/get-started/">Docker Docs tutorial</a>, and a number of other resources.</p>
+</blockquote>
+<div class="toc">
+<ul>
+<li><a href="#docker-and-containerisation">3. Docker and Containerisation</a><ul>
+<li><a href="#introduction">3.1 Introduction</a><ul>
+<li><a href="#what-is-containerisation-and-docker">3.1.1 What is Containerisation and Docker</a></li>
+<li><a href="#docker-concepts-in-more-detail">3.1.2 Docker Concepts in more detail</a></li>
+<li><a href="#starling-container-ecosystem">3.1.3 Starling Container Ecosystem</a></li>
+</ul>
+</li>
+<li><a href="#using-docker-with-starling">3.2 Using Docker with Starling</a><ul>
+<li><a href="#getting-and-running-containers">3.2.1 Getting and Running Containers</a></li>
+<li><a href="#creating-containers">3.2.2 Creating Containers</a></li>
+<li><a href="#layer-caching">3.2.3 Layer Caching</a></li>
+<li><a href="#inspecting-a-container">3.2.4 Inspecting a container</a></li>
+</ul>
+</li>
+<li><a href="#next-steps">3.3 Next Steps</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="introduction"><span class="enumerate-headings-plugin enumerate-heading-plugin">3.1</span> Introduction<a class="headerlink" href="#introduction" title="Permanent link">¶</a></h2>
+<h3 id="what-is-containerisation-and-docker"><span class="enumerate-headings-plugin enumerate-heading-plugin">3.1.1</span> What is Containerisation and Docker<a class="headerlink" href="#what-is-containerisation-and-docker" title="Permanent link">¶</a></h3>
+<p>It would be nice to give a computer - any computer with an internet connection - a short string of ASCII characters (say via a keyboard), press enter, and return to see some program running. Forget about where the program was built or what software you happened to be running at the time (this can be checked, and we can fetch the necessary dependencies). Sounds simple, right? In fact, this is an engineering task that has taken thousands of the world’s brightest developers many decades to implement.</p>
+<p>Thanks to the magic of container technology we now can run any Linux program on almost any networked device on the planet, as is. All of the environment preparation, installation and configuration steps can be automated from start to finish. Depending on how much network bandwidth you have, it might take a while, but that’s all right. All you need to do is type the string correctly.</p>
+<p>Docker is one very widely used example of containerisation technology, and the one we make use of in Starling. They provide a large number of tools and programs to help us contain, develop, test and deploy our containers to the real world.</p>
+<p>If you followed the <a href="../getting_started/">getting started</a>, you should hopefully have done the full docker install. If not, you can run the following command from a linux command line to install basic docker.</p>
+<pre><code> curl -sSL https://get.docker.com/ | sh
+</code></pre>
+<h3 id="docker-concepts-in-more-detail"><span class="enumerate-headings-plugin enumerate-heading-plugin">3.1.2</span> Docker Concepts in more detail<a class="headerlink" href="#docker-concepts-in-more-detail" title="Permanent link">¶</a></h3>
+<blockquote>
+<p>Adapted from <a href="https://www.docker.com/resources/what-container/">Docker Resources</a></p>
+</blockquote>
+<p>A <strong>container</strong> is a standard unit of software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to another. A Docker container image is a lightweight, standalone, executable package of software that includes everything needed to run an application: code, runtime, system tools, system libraries and settings.</p>
+<p>Container <strong>images</strong> become containers at runtime and in the case of Docker containers – images become containers when they run on Docker Engine. Available for both Linux and Windows-based applications, containerized software will always run the same, regardless of the infrastructure. Containers isolate software from its environment and ensure that it works uniformly despite differences for instance between development and staging.</p>
+<p>Containers are <em>Standard</em> (can run anywhere), <em>Lightweight</em> (Share low level machine system and not the whole Operating System) and <em>Secure</em> (Each application is as isolated as possible). For us this also translates to providing <em>Reproduceable</em> and <em>Reusable</em> systems.</p>
+<p><img alt="container_vs_vm" src="../imgs/container_vm.png"/></p>
+<p>On the left, Containers are an abstraction at the app layer that packages code and dependencies together. Multiple containers can run on the same machine and share the OS kernel with other containers, each running as isolated processes in user space. Containers take up less space than VMs (container images are typically tens of MBs in size), can handle more applications and require fewer VMs and Operating systems.</p>
+<p>On the right, Virtual machines (VMs) are an abstraction of physical hardware turning one server into many servers. The hypervisor allows multiple VMs to run on a single machine. Each VM includes a full copy of an operating system, the application, necessary binaries and libraries – taking up tens of GBs. VMs can also be slow to boot.</p>
+<h3 id="starling-container-ecosystem"><span class="enumerate-headings-plugin enumerate-heading-plugin">3.1.3</span> Starling Container Ecosystem<a class="headerlink" href="#starling-container-ecosystem" title="Permanent link">¶</a></h3>
+<p>The purpose of Starling is to allow you to quickly and easily install and run a UAV simulation within a simulated environment, so that you can test your developed controllers against a semi-realistic scenario, to then test in the real world</p>
+<p>Therefore Starling is a set of pre-built programs/executables, some of which are pre-configured for the following:</p>
+<ul>
+<li>Running a Physics Simulation with Visualisation</li>
+<li>Running the Drone autopilot control software locally (a.k.a Software In The Loop or SITL)</li>
+<li>Running the interface between Mavlink and other protocols such as the Robot Operating System (ROS)</li>
+<li>And many others...</li>
+</ul>
+<p>These pre-built containers are all available in the <a href="https://github.com/StarlingUAS">StarlingUAS repository on github</a> and on Docker Hub.</p>
+<p>Together these containers form a modular ecosystem of drone systems which can be composed together to develop software for real drones. Any controllers developed via the simulator can be directly ported to run on a real drone.</p>
+<p><img alt="dockerhub" src="../imgs/docker/dockerhub.png"/></p>
+<h2 id="using-docker-with-starling"><span class="enumerate-headings-plugin enumerate-heading-plugin">3.2</span> Using Docker with Starling<a class="headerlink" href="#using-docker-with-starling" title="Permanent link">¶</a></h2>
+<h3 id="getting-and-running-containers"><span class="enumerate-headings-plugin enumerate-heading-plugin">3.2.1</span> Getting and Running Containers<a class="headerlink" href="#getting-and-running-containers" title="Permanent link">¶</a></h3>
+<p>Every docker container is registered to a developer or organisation. In Starling, our docker organisation is known as <a href="https://hub.docker.com/orgs/uobflightlabstarling"><code>uobflightlabstarling</code></a>. Within our organisation, we have a large number of Docker <strong>containers</strong> available. These Docker containers live inside <a href="https://hub.docker.com/orgs/uobflightlabstarling/repositories"><strong>container registries</strong></a> (such as DockerHub), which are servers that host Docker images. A Docker <strong>image</strong> is one particular version or snapshot of a container and is basically a filesystem snapshot - a single file that contains everything you need to run our container.</p>
+<p>You can manually fetch one of our core containers called <code>starling-mavros</code> from docker hub using:</p>
+<pre><code class="language-bash">docker pull uobflightlabstarling/starling-mavros
+</code></pre>
+<p>You can also try and pull one of our simulation containers:</p>
+<pre><code class="language-bash">docker pull uobflightlabstarling/starling-sim-iris-px4-flightarena:latest
+</code></pre>
+<p>This might take a few minutes to download depending on internet connection (some containers like the simulation can be quite big!). Once downloaded, to see a list of Docker images on your machine, run:</p>
+<pre><code class="language-bash">docker images
+</code></pre>
+<p>Every image has an image ID, a name and a tag</p>
+<pre><code class="language-text">REPOSITORY                                                              TAG               IMAGE ID       CREATED         SIZE
+uobflightlabstarling/starling-sim-iris-px4-flightarena                  latest            62d7f96637cf   3 weeks ago     5.97GB
+uobflightlabstarling/starling-mavros                                    latest            b70812c16731   5 months ago    2.06GB
+</code></pre>
+<p>To run a Docker container, type the repository name, like so:</p>
+<pre><code class="language-bash">docker run uobflightlabstarling/starling-mavros
+# Or with the tag if you want to run a specific tag (version) of that container
+docker run uobflightlabstarling/starling-mavros:latest
+</code></pre>
+<p>In another terminal, you can see what is currently running using:</p>
+<pre><code class="language-text">docker ps
+CONTAINER ID   IMAGE                                  COMMAND                  CREATED          STATUS          PORTS     NAMES
+4fd1e0948f23   uobflightlabstarling/starling-mavros   "/ros_entrypoint.sh …"   46 seconds ago   Up 45 seconds             vigilant_nobel
+</code></pre>
+<p>Note how your the running container has a <em>container ID</em>, a base image you ran, and at the end, a funny name <em>vigilant_noble</em>. This funny name is an alias for the container ID.</p>
+<p>To stop the container, simply press <code>ctrl+c</code> in the terminal which you ran <code>docker run</code>.</p>
+<p>As a second example, you can similarly try and run the simulator, this time also specifying a port mapping to let you see the simulator in your web-browser.</p>
+<pre><code class="language-bash">docker run -p 8080:8080 uobflightlabstarling/starling-sim-iris-px4-flightarena
+</code></pre>
+<p>Then you can navigate to <code>localhost:8080</code> in your web browser to see the simulator. You should hopefully see something like the following:</p>
+<p><img alt="flightarena" src="../imgs/docker/flightarena.png"/></p>
+<p>You can use the cursor to move around the environment, we will be coming back to the simulator in a <a href="../simulation/">later section</a>.</p>
+<p>To stop the simulator, you can try and use <code>ctrl+c</code>, but sometimes this doenst work. Another way is to first get the container ID or name like before:</p>
+<pre><code class="language-text">docker ps
+CONTAINER ID   IMAGE                                                    COMMAND                  CREATED         STATUS         PORTS                                         NAMES
+6a4bd538118c   uobflightlabstarling/starling-sim-iris-px4-flightarena   "/entrypoint.sh ros2…"   2 minutes ago   Up 2 minutes   7681/tcp, 11345/tcp, 0.0.0.0:8080-&gt;8080/tcp   trusting_diffie
+</code></pre>
+<p>See how the name is <code>trusting_diffie</code> with ID <code>6a4bd538118c</code>.</p>
+<p>You can then explicitly stop the container by running (it can sometimes take a minute).</p>
+<pre><code class="language-bash">docker stop trusting_diffie
+# or
+docker stop 6a4bd538118c
+</code></pre>
+<p>Dont forget to also remove the container afterwards</p>
+<pre><code class="language-bash">docker rm trusting_diffie
+# or
+docker rm 6a4bd538118c
+</code></pre>
+<h3 id="creating-containers"><span class="enumerate-headings-plugin enumerate-heading-plugin">3.2.2</span> Creating Containers<a class="headerlink" href="#creating-containers" title="Permanent link">¶</a></h3>
+<p>To create a Docker image we write a recipe, called a <em>Dockerfile</em>. A <em>Dockerfile</em> is a text file that specifies the commands required to create a Docker image, typically by modifying an existing container image using a scripting interface. They also have special keywords (which are always CAPITALIZED), like <code>FROM</code>, <code>RUN</code>, <code>ENTRYPOINT</code> and so on. For example, create a file called Dockerfile with the following content:</p>
+<pre><code class="language-text">FROM ros:foxy       # Defines the base image
+RUN touch new_file1   # new_file1 will be part of our snapshot
+CMD ls -l             # Default command to be run when the container is started
+</code></pre>
+<p>Now, to build the image we can simply run:</p>
+<pre><code class="language-bash">docker build -t your/duck:v3 .       # Where '.' is the directory containing your Dockerfile
+</code></pre>
+<p>You should see something like:</p>
+<pre><code class="language-text">Sending build context to Docker daemon  2.048kB
+Step 1/3 : FROM uobflightlabstarling/starling-mavros
+ --- ea2f90g8de9e
+Step 2/3 : RUN touch new_file1
+ --- e3b75gt9zyc4
+Step 3/3 : CMD ls -l
+ --- Running in 14f834yud59
+Removing intermediate container 14f834yud59
+ --- 05a3bd381fc2
+Successfully built 05a3bd381fc2
+Successfully tagged your/duck:v3
+</code></pre>
+<p>Now run the command docker images in your terminal, and you should see an image called your/duck with tag v3:</p>
+<pre><code class="language-text">docker images
+REPOSITORY                                                              TAG               IMAGE ID       CREATED         SIZE
+your/duck                                                               v3                ea2f90g8de9e   1 minute ago    2.06GB
+uobflightlabstarling/starling-sim-iris-px4-flightarena                  latest            62d7f96637cf   3 weeks ago     5.97GB
+uobflightlabstarling/starling-mavros                                    latest            b70812c16731   5 months ago    2.06GB
+</code></pre>
+<p>This procedure is identical to the snapshot method we performed earlier, but the result is much cleaner. Now, instead of needing to carry around a 2.06GB BLOB, we can just store the 4KB text file and rest assured that all our important setup commands are contained within. Similar to before, we can simply run:</p>
+<pre><code class="language-text">docker run -it your/duck:v3
+total 0
+-rw-r--r-- 1 root root 0 May 21 21:35 new_file1
+</code></pre>
+<p>Notice that as soon as we run the container, Docker will execute the ls -l command as specified by the Dockerfile, revealing new_file1 was stored in the image. However we can still override ls -l by passing a command line argument:</p>
+<pre><code class="language-bash">docker run -it your/duck:v3 [custom command]
+</code></pre>
+<p>In the next tutorial, we will go into more detail in how these Dockerfiles are constructed for us.</p>
+<h3 id="layer-caching"><span class="enumerate-headings-plugin enumerate-heading-plugin">3.2.3</span> Layer Caching<a class="headerlink" href="#layer-caching" title="Permanent link">¶</a></h3>
+<p>An important concept in Docker is the <em>layers</em>. In the previous section you may think that every time we build, we end up having to copy over the entire parent container. e.g. your/duck:v3 takes up another 2Gb of storage space! In actual fact, it (thankfully) does not, because under the hood the executable does not exist as one giant individible binary. It is in fact split into multiple independnet layers which can be shared in between images!</p>
+<blockquote>
+<p>Essentially each <code>RUN</code> line in your Dockerfile is compiled into a new layer placed upon the previous layers.</p>
+</blockquote>
+<p>This is helpful as if you try to build your container again, unless you change something, those previous layers are <em>cached</em> by Docker to be used instead of rebuilding the entire thing from scratch!</p>
+<h3 id="inspecting-a-container"><span class="enumerate-headings-plugin enumerate-heading-plugin">3.2.4</span> Inspecting a container<a class="headerlink" href="#inspecting-a-container" title="Permanent link">¶</a></h3>
+<p>One of the downsides of containers is that manipulating files and inspecting the their state is not as simple. Previously, you could just browser through your own file system and check things. Now that a container has its own file system, its not as clear how you could check things have been set up correctly, or test run commands manually or similar.</p>
+<p>There are a number of different ways, but the simplest way is to <code>exec</code> into a running container. As an example, you can run <code>starling-mavros</code> again in one terminal.</p>
+<pre><code class="language-bash">docker run uobflightlabstarling/starling-mavros
+</code></pre>
+<p>In another terminal, identify the container ID or name by using <code>docker ps</code></p>
+<pre><code class="language-text">CONTAINER ID   IMAGE                                  COMMAND                  CREATED         STATUS         PORTS     NAMES
+81b7dfb6c443   uobflightlabstarling/starling-mavros   "/ros_entrypoint.sh …"   3 seconds ago   Up 2 seconds             angry_yalow
+</code></pre>
+<blockquote>
+<p><em>Note:</em> The IDs have changed from the previous time we ran this container. Sometimes you want containers to persist, or do not want to delete them for testing and such.</p>
+</blockquote>
+<p>We can then use the ID of <code>81b7dfb6c443</code> or its name <code>angry_yalow</code> to <code>exec</code> into a container to run a command:</p>
+<pre><code class="language-bash">docker exec -it angry_yalow [command]
+</code></pre>
+<p>For example, in most cases it will be most useful to open up a <code>bash</code> terminal to inspect contents:</p>
+<pre><code class="language-text">docker exec -it angry_yalow bash
+root@81b7dfb6c443:/ros_ws#
+</code></pre>
+<p>This opens up a terminal inside the container for you to navigate around and inspect things as you wish, in a similar manner to if you SSH'd into another machine.</p>
+<blockquote>
+<p><em>Note:</em> Use the <code>cat</code> command to view the contents of files.</p>
+<p><em>Note:</em> These containers have almost no tools to keep them slim. If you want to edit things, you will need to download a command line file editor. Run <code>apt-get update</code> then install an editor like <code>nano</code> with <code>apt-get install nano</code>.</p>
+</blockquote>
+<h2 id="next-steps"><span class="enumerate-headings-plugin enumerate-heading-plugin">3.3</span> Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">¶</a></h2>
+<p>Hopefully you now have a decent understanding of what containerisation is and its purpose within Starling. You have also had a go at using the Docker command line tool to pull, run, build and inspect Starling containers going forward.</p>
+<p>With all that, we are now at a point where you can start creating your own containers to use!</p>
+</div>
+</div>
+<footer>
+<div aria-label="footer navigation" class="rst-footer-buttons" role="navigation">
+<a class="btn btn-neutral float-right" href="../creating/" title="4. Creating your own Starling project">Next <span class="icon icon-circle-arrow-right"></span></a>
+<a class="btn btn-neutral" href="../ros2_uav/" title="2. ROS2 and UAV Control"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+</div>
+<hr/>
+<div role="contentinfo">
+<!-- Copyright etc -->
+<p>Copyright © 2022 University of Bristol Flight Laboratory</p>
+</div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="versions" class="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span>
+<a class="fa fa-github" href="https://github.com/StarlingUAS/starling_controller_templates/tree/implement_example/" style="color: #fcfcfc"> GitHub</a>
+</span>
+<span><a href="../ros2_uav/" style="color: #fcfcfc">« Previous</a></span>
+<span><a href="../creating/" style="color: #fcfcfc">Next »</a></span>
+</span>
+</div>
+<script>var base_url = '..';</script>
+<script defer="" src="../js/theme_extra.js"></script>
+<script defer="" src="../js/theme.js"></script>
+<script defer="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script defer="" src="../search/main.js"></script>
+<script defer="">
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+</body>
+</html>

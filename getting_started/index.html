@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+<meta charset="utf-8"/>
+<meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="../img/favicon.ico" rel="shortcut icon"/>
+<title>1. Getting Started  - Starling Tutorial</title>
+<link href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" rel="stylesheet"/>
+<link href="../css/theme.css" rel="stylesheet">
+<link href="../css/theme_extra.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" rel="stylesheet"/>
+<script>
+    // Current page data
+    var mkdocs_page_name = "1. Getting Started ";
+    var mkdocs_page_input_path = "getting_started.md";
+    var mkdocs_page_url = null;
+  </script>
+<script defer="" src="../js/jquery-2.1.1.min.js"></script>
+<script defer="" src="../js/modernizr-2.8.3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+</link></head>
+<body class="wy-body-for-nav" role="document">
+<div class="wy-grid-for-nav">
+<nav class="wy-nav-side stickynav" data-toggle="wy-nav-shift">
+<div class="wy-side-scroll">
+<div class="wy-side-nav-search">
+<a class="icon icon-home" href=".."> Starling Tutorial</a>
+<div role="search">
+<form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
+<input name="q" placeholder="Search docs" title="Type search term here" type="text"/>
+</form>
+</div>
+</div>
+<div aria-label="main navigation" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+<p class="caption"><span class="caption-text">Tutorial</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal current" href="./">1. Getting Started </a>
+<ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="#preamble">1.1 Preamble</a>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisits">1.2 Prerequisits</a>
+<ul>
+<li class="toctree-l3"><a class="reference internal" href="#git-and-docker">1.2.1 Git and Docker</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#murmuration-starling-command-line-interface">1.2.2 Murmuration - Starling Command Line Interface</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#cookiecutter">1.2.3 Cookiecutter</a>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#useful-programs">1.2.4 Useful Programs</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#next-steps">1.3 Next Steps</a>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../ros2_uav/">2. ROS2 and UAV Control</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docker/">3. Docker and Containerisation</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../creating/">4. Creating your own Starling project</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../simulation/">5. Simulation and the Digital Double</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../cpp_example_dev/">6. Developing the example controller with ROS2 in CPP</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../testing_with_docker_compose/">7. Local testing with Docker-Compose</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../multiuav_kubernetes/">8. Multi-UAV flight with Kubernetes for container deployment</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../testing_with_kind/">9. Local Integration testing with KinD Digital Double</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../brl/">10. Bristol Robotics Laboratory Flying Arena</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../brl_flight/">11. Flying your controllers in the Flying Arena</a>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../next_steps/">12. Wrapping up and next steps</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+<nav aria-label="top navigation" class="wy-nav-top" role="navigation">
+<i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+<a href="..">Starling Tutorial</a>
+</nav>
+<div class="wy-nav-content">
+<div class="rst-content">
+<div aria-label="breadcrumbs navigation" role="navigation">
+<ul class="wy-breadcrumbs">
+<li><a href="..">Docs</a> »</li>
+<li>Tutorial »</li>
+<li>1. Getting Started </li>
+<li class="wy-breadcrumbs-aside">
+<a class="icon icon-github" href="https://github.com/StarlingUAS/starling_controller_templates/tree/implement_example/edit/master/docs/getting_started.md"> Edit on GitHub</a>
+</li>
+</ul>
+<hr/>
+</div>
+<div role="main">
+<div class="section">
+<h1 id="getting-started"><span class="enumerate-headings-plugin enumerate-heading-plugin">1.</span> Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">¶</a></h1>
+<p>This first tutorial takes you through setting up your machine to be able to run Starling in order to follow the rest of the tutorial.</p>
+<div class="toc">
+<ul>
+<li><a href="#getting-started">1. Getting Started</a><ul>
+<li><a href="#preamble">1.1 Preamble</a></li>
+<li><a href="#prerequisits">1.2 Prerequisits</a><ul>
+<li><a href="#git-and-docker">1.2.1 Git and Docker</a></li>
+<li><a href="#murmuration-starling-command-line-interface">1.2.2 Murmuration - Starling Command Line Interface</a></li>
+<li><a href="#cookiecutter">1.2.3 Cookiecutter</a></li>
+<li><a href="#useful-programs">1.2.4 Useful Programs</a></li>
+</ul>
+</li>
+<li><a href="#next-steps">1.3 Next Steps</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="preamble"><span class="enumerate-headings-plugin enumerate-heading-plugin">1.1</span> Preamble<a class="headerlink" href="#preamble" title="Permanent link">¶</a></h2>
+<p>For this tutorial, it will be assumed that you have a functional understanding of the Linux, Mac or Windows interface. This includes use of the command line and terminal applications on linux or Mac, and powershell or Windows Subsystem for Linux (WSL) on windows. If you do not feel comfortable with either of these, it is recommended you have a read of this tutorial first: <a href="https://docs.starlinguas.dev/tutorials/introduction/#a-brief-introduction-to-linux">https://docs.starlinguas.dev/tutorials/introduction/#a-brief-introduction-to-linux</a>. This tutorial covers some of the setup shown in this first tutorial in much more detail.</p>
+<h2 id="prerequisits"><span class="enumerate-headings-plugin enumerate-heading-plugin">1.2</span> Prerequisits<a class="headerlink" href="#prerequisits" title="Permanent link">¶</a></h2>
+<h3 id="git-and-docker"><span class="enumerate-headings-plugin enumerate-heading-plugin">1.2.1</span> Git and Docker<a class="headerlink" href="#git-and-docker" title="Permanent link">¶</a></h3>
+<p>You will need to install <a href="https://git-scm.com/downloads">git</a> to access the software and <a href="https://docs.docker.com/get-docker/">docker</a> to run it.  These are both supported on Windows, Mac and Linux. The Docker Desktop application should also be suitable.</p>
+<blockquote>
+<p>Linux users, please verify that the <code>docker-compose</code> tool is installed by running <code>docker-compose --version</code>. If it fails, install using <code>sudo apt-get install docker-compose-plugin</code>. <a href="https://docs.docker.com/compose/install/compose-plugin/#installing-compose-on-linux-systems">see here</a>.</p>
+<p>Windows users, it is highly recommended that you also install the Windows Subsystem for Linux (WSL) and use that as the backend for your Docker installations. <a href="https://docs.docker.com/desktop/windows/wsl/">see here for instructions</a></p>
+</blockquote>
+<p>It is also recommended that you sign up for a github account and a dockerhub account.</p>
+<h3 id="murmuration-starling-command-line-interface"><span class="enumerate-headings-plugin enumerate-heading-plugin">1.2.2</span> Murmuration - Starling Command Line Interface<a class="headerlink" href="#murmuration-starling-command-line-interface" title="Permanent link">¶</a></h3>
+<p>You will need to download the <a href="https://github.com/StarlingUAS/Murmuration">Murmuration repository</a> which contains a useful command line interface (cli). This can hopefully abstract away the need to remember all of the different commands.</p>
+<p>To install, go to your work directory and clone the repository using the command line or gui and run the following commands:</p>
+<pre><code class="language-bash">git clone https://github.com/StarlingUAS/Murmuration.git # clones locally
+cd Murmuration
+</code></pre>
+<p>In the bin directory of the repository, there is the core cli script named <code>starling</code>. <code>starling</code> includes a further installation script to help install further requirements. This installation script will need to be run using root. See the following guide on which arguments you should give.</p>
+<blockquote>
+<p>If running within Murmuration, swap <code>starling</code> for <code>./bin/starling</code>. However for convenience, you can put <code>starling</code> onto your path. This can be done by adding <code>export PATH=&lt;Path to murmuration&gt;/bin:$PATH</code> into <code>~/.bashrc</code> followed by <code>source ~/.bashrc</code> , or running the same command locally in the terminal. Then you can use the <code>starling</code></p>
+</blockquote>
+<p>Then to finish the installation run:</p>
+<pre><code class="language-bash">
+sudo starling install
+# or if you have not added starling to path and are in the Murmuration directory.
+sudo ./bin/starling install
+</code></pre>
+<h3 id="cookiecutter"><span class="enumerate-headings-plugin enumerate-heading-plugin">1.2.3</span> Cookiecutter<a class="headerlink" href="#cookiecutter" title="Permanent link">¶</a></h3>
+<p>The template generation uses the <a href="https://cookiecutter.readthedocs.io/en/stable/README.html"><code>cookiecutter</code></a> tool for generating custom projects from a template. To install, first install Python and then run the following:</p>
+<pre><code class="language-sh">python3 -m pip install --user cookiecutter
+# or
+easy_install --user cookiecutter
+</code></pre>
+<blockquote>
+<p>See <a href="https://cookiecutter.readthedocs.io/en/stable/installation.html">cookiecutter installation</a> for further details on different platforms.</p>
+</blockquote>
+<p>This will give you access to the <code>cookiecutter</code> command line interface.</p>
+<h3 id="useful-programs"><span class="enumerate-headings-plugin enumerate-heading-plugin">1.2.4</span> Useful Programs<a class="headerlink" href="#useful-programs" title="Permanent link">¶</a></h3>
+<p>We highly recommend <a href="https://code.visualstudio.com/download">Visual Studio Code</a> as our editing environment as it has a number of nice features, extensions and allows easy access to terminal windows. Once installed you can run vscode from any directory by running <code>code &lt;my directory&gt;</code>, e.g. <code>code .</code>.</p>
+<h2 id="next-steps"><span class="enumerate-headings-plugin enumerate-heading-plugin">1.3</span> Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">¶</a></h2>
+<p>This should give you all the tools to be able to run the tutorials. Before we dive into creating your own, let us first introduce all the core technologies which Starling makes use of, in order to give you enough background for you all to create your own controllers.</p>
+</div>
+</div>
+<footer>
+<div aria-label="footer navigation" class="rst-footer-buttons" role="navigation">
+<a class="btn btn-neutral float-right" href="../ros2_uav/" title="2. ROS2 and UAV Control">Next <span class="icon icon-circle-arrow-right"></span></a>
+</div>
+<hr/>
+<div role="contentinfo">
+<!-- Copyright etc -->
+<p>Copyright © 2022 University of Bristol Flight Laboratory</p>
+</div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+</div>
+</div>
+</section>
+</div>
+<div aria-label="versions" class="rst-versions" role="note">
+<span class="rst-current-version" data-toggle="rst-current-version">
+<span>
+<a class="fa fa-github" href="https://github.com/StarlingUAS/starling_controller_templates/tree/implement_example/" style="color: #fcfcfc"> GitHub</a>
+</span>
+<span><a href="../ros2_uav/" style="color: #fcfcfc">Next »</a></span>
+</span>
+</div>
+<script>var base_url = '..';</script>
+<script defer="" src="../js/theme_extra.js"></script>
+<script defer="" src="../js/theme.js"></script>
+<script defer="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script defer="" src="../search/main.js"></script>
+<script defer="">
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+</body>
+</html>
