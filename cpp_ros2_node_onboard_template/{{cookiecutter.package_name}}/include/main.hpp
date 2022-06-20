@@ -94,7 +94,7 @@ class UAVController : public rclcpp::Node
         std::string vehicle_id;
         std::shared_ptr<trajectory_msgs::msg::JointTrajectoryPoint> start_trajectory_location;
         std::shared_ptr<geometry_msgs::msg::PoseStamped> vehicle_local_position;
-    private: 
+    private:
 
         std::shared_ptr<UserController> user_controller;
 
@@ -155,7 +155,7 @@ class UAVController : public rclcpp::Node
         std::shared_ptr<mavros_msgs::msg::State> vehicle_state;
         std::shared_ptr<mavros_msgs::msg::State> prev_vehicle_state;
         rclcpp::Time last_received_vehicle_local_position;
-        // std::shared_ptr<geometry_msgs::msg::PoseStamped> vehicle_local_position;
+        std::shared_ptr<geometry_msgs::msg::PoseStamped> vehicle_local_position;
         std::shared_ptr<geometry_msgs::msg::PoseStamped> vehicle_setpoint;
 
         // TF Broadcasting
