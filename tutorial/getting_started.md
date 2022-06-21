@@ -6,7 +6,7 @@ This first tutorial takes you through setting up your machine to be able to run 
 
 ## Preamble
 
-For this tutorial, it will be assumed that you have a functional understanding of the Linux, Mac or Windows interface. This includes use of the command line and terminal applications on linux or Mac, and powershell or Windows Subsystem for Linux (WSL) on windows. If you do not feel comfortable with either of these, it is recommended you have a read of this tutorial first: [https://docs.starlinguas.dev/tutorials/introduction/#a-brief-introduction-to-linux](https://docs.starlinguas.dev/tutorials/introduction/#a-brief-introduction-to-linux). This tutorial covers some of the setup shown in this first tutorial in much more detail.
+For this tutorial, it will be assumed that you have a functional understanding of the Linux, Mac or Windows interface. This includes use of the command line and terminal applications on linux or Mac, and powershell or Windows Subsystem for Linux (WSL) on windows. If you do not feel comfortable with either of these, it is recommended you have a read of [this tutorial](https://docs.starlinguas.dev/tutorials/introduction/#a-brief-introduction-to-linux) first, which covers some of the set up shown here in much more detail.
 
 ## Prerequisits
 
@@ -18,7 +18,7 @@ You will need to install [git](https://git-scm.com/downloads) to access the soft
 
 > Windows users, it is highly recommended that you also install the Windows Subsystem for Linux (WSL) and use that as the backend for your Docker installations. [see here for instructions](https://docs.docker.com/desktop/windows/wsl/)
 
-It is also recommended that you sign up for a github account and a dockerhub account.
+It is also recommended that you sign up for a Github account and a Docker Hub account.
 
 ### Murmuration - Starling Command Line Interface
 

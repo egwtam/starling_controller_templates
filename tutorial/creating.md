@@ -1,16 +1,16 @@
 # Creating your own Starling Project
 
-This tutorial takes you through using the Starling templates repository to generate your own custom starling application.
+This tutorial takes you through using the Starling templates repository to generate your own custom Starling application.
 
 [TOC]
 
-## Prerequists
+## Prerequisites
 
-In order to complete this tutorial, you will need the following installed. You may have already installed these within [Getting Strted](getting_started.md)
+In order to complete this tutorial, you will need to install the following. You may have already installed these during [Getting Started](getting_started.md).
 
 The template generation uses the [`cookiecutter`](https://cookiecutter.readthedocs.io/en/stable/README.html) tool for generating custom projects from a template.
 
-Then run:
+To install:
 
 ```sh
 python3 -m pip install --user cookiecutter
@@ -18,28 +18,28 @@ python3 -m pip install --user cookiecutter
 easy_install --user cookiecutter
 ```
 
-> See [cookiecutter installation](https://cookiecutter.readthedocs.io/en/stable/installation.html) for further details on different platforms.
+> See [Cookiecutter Installation](https://cookiecutter.readthedocs.io/en/stable/installation.html) for details for different platforms.
 
-This will give you access to the `cookiecutter` command line interface.
+Doing the above should give you access to the `cookiecutter` command line interface.
 
-> Recommendation is to sign up for Docker Hub and Github, necessary if you wish to fly your controller in the real world.
+> We also recommend you sign up for Docker Hub and Github as both are necessary if you wish to fly your controller in the real world.
 
 ## Project Structure Planning
 
-Before diving in to creating your project, you first need to decide on the structure of the project. The structure is wholy determined by the application, and the functionality that is split between the central server and onboard each vehicle. Let's review our task for this tutorial:
+Before diving in to creating your project, you first need to decide on the structure of the project. The structure is determined by the application, and the functionality is split between the central server and each vehicle. Let's review our task for this tutorial:
 
-> > In this scene a number of drones take off and automatically fly to starting points equidistant around a circle of a given radius. They then start circling around the edge of the circle attempting to stay equidistant to their neighbours. It is determined that the vehicles have not been well tuned and can end up lagging, therefore a centralised server monitors all the vehicles and notifies them if they are lagging behind.
+> > In this scene, a number of drones take off and automatically fly to starting points equidistant around a circle of a given radius. They then start circling around the edge of the circle attempting to stay equidistant to their neighbours. It is determined that the vehicles have not been well tuned and can end up lagging, so a centralised server monitors all the vehicles and notifies them if they are lagging behind.
 
-A Starling Project is comprised of one or more ROS Nodes which each encompass one piece of functionality. In this project we can identify the need for the following:
+A Starling Project is comprised of one or more ROS Nodes which each encompass one piece of functionality. In this project we can identify the following requirements:
 
 1. A node onboard the vehicle which can arm, takeoff, land and fly it in a circle of radius r from a given start location in a safe manner.
-2. A node offboard on the cetral server which receives vehicle locations, finds the ideal locations and then sends that information back to the vehicles.
+2. A node offboard on the central server which receives vehicle locations, finds the ideal locations and then sends that information back to the vehicles.
 
-Through this we identify that we may also need to provide a set of custom messages for the communication of specific information between server and vehicle.
+We can see that we may also need to provide a set of custom messages for the communication of specific information between server and vehicle.
 
-Therefore this Starling Project will contain the source code for an onboard node, an offboard node and a set of custom messages.
+Therefore, we will need this Starling Project to contain the source code for an onboard node, an offboard node and a set of custom messages.
 
-An important task is then to name these beforehand as we will need to refer to these names in the next step. By default we have named them the following, but you should endeavour to name them something better!
+An important task is then to name these beforehand as we need a way to refer to them in the next step. We've used some example names below, but please try to give yours better names :)
 
 1. Offboard node: `template_python_node`
 2. Onboard node: `template_cpp_node`
@@ -47,13 +47,13 @@ An important task is then to name these beforehand as we will need to refer to t
 
 ## Generating the base Starling Project
 
-The first step is to build your own Starling project. The following will start the process of using the template to generate the base starling project. In your workspace, run the following command.
+The first step is to build your own Starling project. The following will start the process of generating the base Starling project. In your workspace, run the following command.
 
 ```bash
 cookiecutter https://github.com/StarlingUAS/starling_controller_templates.git --directory starling_template
 ```
 
-It will follow by asking you to fill in a number of details. The value in the square brackets indicates the default value if you choose not to enter anything. Press Enter to go on to the next one. The inputs include the following.
+You will then be prompted to fill in some details. The value in the angle brackets indicate the default value if you choose not to enter anything. Press Enter to go on to the next one. The inputs include the following.
 
 | Name | Description |
 |----------------	|-----------	|
@@ -61,8 +61,8 @@ It will follow by asking you to fill in a number of details. The value in the sq
 | Email | Your email address used for documentation |
 | Short Description | A short description of your project added to the documentation and project files |
 | Project Name | The name you have given to this Starling Project, make sure that you are happy with this as changing the name after fact is a bit of a pain. |
-| Github Username | Optionally your github username for filling in the README and metadata |
-| Docker Username | Optionally your docker hub username which is used for naming the Starling image. Will be used to upload to if you wish to push it online. |
+| Github Username | (Optional) Your Github username for filling in the README and metadata |
+| Docker Username | (Optional) Your Docker Hub username which is used for naming the Starling image. Will be used to upload to if you wish to push it online. |
 | Docker Image Name | The name of the Starling image that this repository produces |
 | Docker Image Name Full | An autogenerated name based on your username and image name, you can leave as the default unless you really want to change it. By default it is `<Docker Username>/<Docker Image Name>`|
 | Onboard ROS2 Package Name | The name of the onboard controller which this containers Dockerfile will run in `onboard` mode. |
@@ -72,7 +72,7 @@ It will follow by asking you to fill in a number of details. The value in the sq
 
 > *Note:* The last two entries are for automatically populating the `run.sh` script. The `run.sh` script is the default script your project's Docker container runs on startup. You can leave these two as defaults and edit the `run.sh` script later.
 
-Once complete, the project will be generated into a folder named by your `project_name`. For example, the default project with name `starling_controller` produces a project with the following structure:
+Once complete, the project will be generated into a directory named as `project_name`. For example, the default project with name `starling_controller` produces a project with the following structure:
 
 ```tree
 starling_controller
@@ -91,10 +91,10 @@ starling_controller
 
 We have the following folders and files.
 
-- *starling_controller* will be populated by user created ros packages. Anything in this folder is directly  copied to the Dockerfile and built.
-- *deployment* contains a sample docker-compose file which runs a default simulation stack, and a sample kubernetes file for deployment, both will most definitely need to be edited.
-- *buildtools* contains the specification that docker uses to build the container. It contains the naming for the docker image.
-- *Dockerfile* contains the dockerfile which specifies the build steps for this project. It already specifies the installation of a number of dependencies, including [libInterpolate](https://github.com/CD3/libInterpolate) interpolation library.
+- *starling_controller* will be populated by user created ros packages. Anything in this folder is directly copied to the Dockerfile and built.
+- *deployment* contains a sample `docker-compose.yml` file which runs a default simulation stack, and a sample Kubernetes file for deployment, both will need to be edited to run properly.
+- *buildtools* contains the specification that Docker uses to build the container. It contains the naming for the Docker image.
+- *Dockerfile* specifies the build steps for this project. It already specifies the installation of a number of dependencies, including the [libInterpolate](https://github.com/CD3/libInterpolate) interpolation library.
 
 Once generated, the *Makefile* can be used to build and run commands:
 
@@ -106,9 +106,9 @@ make run_bash # Will build and run the container, putting you in a bash shell in
 make help # Shows the help screen
 ```
 
-This should successfuly build your project container which you can try and run or inspect. Currently it has no funcionality so nothing can happen. Have a look inside the container using `make run_bash`.
+This should successfuly build your project container which you can try and run or inspect. Currently it has no functionality so nothing can happen. Have a look inside the container using `make run_bash`.
 
-> *Note* On windows you can either use WSL or have a look at some of the solutions [in this link](https://stackoverflow.com/questions/2532234/how-to-run-a-makefile-in-windows)
+> *Note* On Windows you can either use WSL or have a look at some of the solutions [in this link](https://stackoverflow.com/questions/2532234/how-to-run-a-makefile-in-windows)
 
 ## Adding Nodes to your project
 
@@ -118,7 +118,7 @@ The generated project has no functionality right now. This repository contains o
 - *python_ros2_node_offboard_template*: Generates a ROS2 node, designed for running offboard (central server) written in Python
 - *ros2_msgs_template*: Generates a ROS2 msgs package which can be used by any ROS2 package within this container.
 
-These nodes can be added to your project using the following cookiecutter commands. Note that the packages should be generated into the `starling_project_name` directory of the base Starling project. Each of these commands are single line commands.
+These nodes can be added to your project using the following `cookiecutter` commands. Note that the packages should be generated in the `starling_project_name` directory of the base Starling project. Each of these commands are single line commands.
 
 ```sh
 # CPP Onboard
@@ -135,22 +135,22 @@ cookiecutter https://github.com/StarlingUAS/starling_controller_templates.git --
 cookiecutter https://github.com/StarlingUAS/starling_controller_templates.git --directory ros2_msgs_template -o starling_controller/starling_controller
 ```
 
-> *Note* the `--directory` option points cookiecutter to the correct template, the `-o` option specifies the output directory, in our case the output should be inside the created Starling project.
+> *Note* the `--directory` argument points `cookiecutter` to the correct template; the `-o` argument specifies the output directory, which in our case should be inside the created Starling project.
 
-Similar to the generating of the base project, these will ask a number of questions to you during the generation. In particular it will ask what the `package_name` is which will become the name of that particular node package.
+Similar to the base project generation, these commands will ask you a number of questions during the generation. Most importantly, it will ask what the `package_name` is which will become the name of that particular node package.
 
 | Name                  	| Default                      	| Description                                                                                                                                                  	|
 |-----------------------	|------------------------------	|--------------------------------------------------------------------------------------------------------------------------------------------------------------	|
 | full_name             	| starling_user                	| Your name used for documentation                                                                                                                             	|
-| email                 	| starling.user@starling.co.uk 	| Your email address used for documentaiton                                                                                                                    	|
+| email                 	| starling.user@starling.co.uk 	| Your email address used for documentation                                                                                                                    	|
 | year                  	| 2022                         	| The year of creation for documentation                                                                                                                       	|
-| package_name          	| template_node                	| The name of this ROS2 Node, make sure this is correct and then you note it down. It should match the ones given in the initial Starling setup                	|
+| package_name          	| template_node                	| The name of this ROS2 Node, make sure this is correct and **note it down**. It should match the ones given in the initial Starling setup                	|
 | short_description     	| ROS2 node template           	| A short description of the functionality of this node for documentation and project files                                                                    	|
-| custom_ros2_msgs_name 	| template_msgs                	| **Important!** The name of the custom msgs package name you have added as part of this starling project. The name must match exactly otherwise the default functionality will fail. 	|
+| custom_ros2_msgs_name 	| template_msgs                	| **Important!** The name of the custom msgs package name you added as part of this Starling project. The name must match exactly otherwise the default functionality will fail! 	|
 
 > *Note* convention for msg packages is to have a package name of format `<mymessages>_msgs`, e.g. `circle_experiment_msgs`.
 
-> *Note* For those familiar with ROS1, it is ROS2 convention to keep messages in a seperate package to the ros nodes themselves.
+> *Note* For those familiar with ROS1, it is ROS2 convention to keep messages in a separate package to the ros nodes themselves.
 
 This should give you a file tree that looks something like the following (of course with your package names instead)
 
@@ -175,21 +175,21 @@ starling_controller
 |-- README.md
 ```
 
-That being said, the nodes can be run standalone for your own projects, one at a time, or whenever you need a new node within your project.
+The nodes can be run standalone for your own projects, one at a time, or whenever you need a new node within your project.
 
-Once these packages have been placed within the correct directory inside the Starling project, you can simply run `make` to check that they are successfully built.
+Once these packages have been placed within the correct directory inside the Starling project, you can simply run `make` to check that they successfully build.
 
 ## What is in the templates
 
-The set of node templates above should create you a project which runs the example scenario specifically developed for the purpose of this tutorial. This example has been designed to show the development of an onboard and an offboard container, as well as demonstratee communication between the two. The scenario is as follows:
+The set of node templates above should create you a project which runs the example scenario specifically developed for the purpose of this tutorial. This example has been designed to show the development of an onboard and an offboard container, as well as demonstrate communication between the two containers. The scenario is as follows:
 
 1. We have \(n\) drones which we would like to fly equidistant around a circle of fixed radius at a initial velocity.
 2. A central server will send each drone an id \(i<n\) to determine its start location around the circle.
 3. Once received the drones will start flying around the circle and send its current position to the server.
-4. The server collates the drones informations to determine if any of the drones are lagging or ahead of where they should be. This ideal position is sent back to each drone.
-5. The drone adjusts its velocity to try based on the error to match with the ideal.
+4. The server collates the drones information to determine if any of the drones are lagging or ahead of where they should be. This ideal position is sent back to each drone.
+5. The drone adjusts its velocity to try and match with the ideal.
 
-With this in mind we can quickly run through what is in each of the ros node templates.
+We can now quickly run through what is in each of the ros node templates.
 
 > *Note:* More detail about the actual functionality within these nodes will be in [this tutorial section](cpp_example_dev.md)
 
@@ -239,16 +239,16 @@ As a brief overview of the code files:
     `-- test_pep257.py
 ```
 
-This node runs offboard on the central server. It is designed to run on its own with no external dependence on anything outside of the application.
+This node runs offboard on the central server. It is designed to run on its own with no external dependency on anything outside of the application.
 
 - `package.xml`: ROS2 Metadata file specifying ros2 dependencies of your project.
-- `resource`: A python ros package special folder, no need to touch
+- `resource`: A Python ros package special folder, do not touch
 - `setup.cfg`: Configuration file specifying where key resources are
-- `setup.py`: The python equivalent of `CMakeLists.txt` and contains the instructions to build this rosnode. It specifies which resources are copied over and available to the rosnode at runtime. Also specifies the name of the binary, and which function it is intended to run. By default this is `controller`
+- `setup.py`: The Python equivalent of `CMakeLists.txt` and contains the instructions to build this rosnode. It specifies which resources are copied over and available to the rosnode at runtime. Also specifies the name of the binary, and which function it is intended to run. By default this is `controller`
 - `<your rosnode name>` e.g. `template_python_node`: The source directory for your python files.
 - `test`: A number of testing utilities which can be run with pytest. Currently not used.
 
-As a brief overview of code files:
+A brief overview of code files:
 
 - `main.py`: Contains a ros node which uses a timer to repeat poll the current state of vehicles on the network at given intervals. It then performs the calculation of ideal vehicle location and sends that to the vehicles.
 
@@ -270,19 +270,19 @@ This node is purely for specifying and building the custom ros messages in our a
 
 ### Dockerfile
 
-As mentioned in the [previous tutorial](docker.md), a Dockerfile is used as a recipe to build your controller docker container.
+As mentioned in the [previous tutorial](docker.md), a Dockerfile is used as a recipe to build your controller Docker container.
 
 The Dockerfile in this template contains the command line instructions to build your controller.
 
-By default it will install a number of useful libraries for compatibility.
+By default, it will install a number of useful libraries for compatibility.
 
-> If you need any new libraries, you will have to add their installation here
+> If you need any new libraries, you will have to add their installation here!
 
 It then essentially copies in all of the rosnodes specified within the project name directory and runs them through the standard ROS2 build tool named `colcon`.
 
 It also copies over the `run.sh` file which the Dockerfile will run on container startup. Therefore the `run.sh` should have the instructions for running your applications.
 
-Thankfully you do not need to run `docker build` automatically as we have setup a special build system which is wrapped up inside the `Makefile`.
+Thankfully, you do not need to run `docker build` automatically as we have set up a special build system which is wrapped up inside the `Makefile`.
 
 ## Running your new project
 
@@ -295,15 +295,15 @@ make run # Will build and run the container
 
 > This will build a container called `<Docker Username>/<Docker Image Name>` with tag latest e.g. `myname/starling_template:latest`
 
-This will build start the onboard controller by default, but it will start complaining that it hasn't received any state or position messages for initialisation. This is normal for now!
+This will start the onboard controller by default, but it will start complaining that it hasn't received any state or position messages for initialisation. This is normal for now!
 
-If you want to start the offboard controller, you can add the extra option `ENV="-e OFFBOARD=true"` to the make command like so `make run ENV="-e OFFBOARD=true"`. Where it will start trying to identify the number of vehicles on the network, but of course it cannot find any!
+If you want to start the offboard controller, you can add the extra option `ENV="-e OFFBOARD=true"` to the make command like so `make run ENV="-e OFFBOARD=true"`. It will then start trying to identify the number of vehicles on the network, but of course it cannot find any!
 
-You can have a look inside both container using `make run_bash`.
+You can have a look inside both containers using `make run_bash`.
 
 ## Initialising Git
 
-Optionally, at this point you can start version controller on your project in order to save your progress. To initalise git and create your first commit, go to the root of your project and run:
+Optionally, at this point you can set up version control on your project in order to save your progress. To initialise `git` and create your first commit, go to the root of your project and run:
 
 ```bash
 git init
@@ -311,7 +311,7 @@ git add -A
 git commit -m "Initial Commit"
 ```
 
-If you want to push this code onto github, you can follow [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-push-an-existing-project-to-github). In short, create an empty github repository of the same name in your github account, then change the remote locally:
+If you want to push this code onto github, you can follow [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-push-an-existing-project-to-github). In short, create an empty Github repository of the same name in your Github account, and change the remote locally:
 
 ```bash
 git remote add origin <remote repository URL>
@@ -321,4 +321,4 @@ git push origin master
 
 ## Next Steps
 
-Congratulations, you now have your own Starling application! It doesn't quite have any functionality just yet but before we get to adding some, it's important to understand how you run the simulation for you to test your controller against!
+Congratulations, you now have your own Starling application! It doesn't have any functionality yet but before we get to adding some, it's important to understand how you run the simulation for you to test your controller against!
