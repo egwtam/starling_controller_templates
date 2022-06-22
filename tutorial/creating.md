@@ -10,7 +10,7 @@ In order to complete this tutorial, you will need to install the following. You 
 
 The template generation uses the [`cookiecutter`](https://cookiecutter.readthedocs.io/en/stable/README.html) tool for generating custom projects from a template.
 
-To install:
+To install it, run the following:
 
 ```sh
 python3 -m pip install --user cookiecutter
@@ -20,7 +20,7 @@ easy_install --user cookiecutter
 
 > See [Cookiecutter Installation](https://cookiecutter.readthedocs.io/en/stable/installation.html) for details for different platforms.
 
-Doing the above should give you access to the `cookiecutter` command line interface.
+This will give you access to the `cookiecutter` command line interface, which is used in this [section](#generating-the-base-starling-project).
 
 > We also recommend you sign up for Docker Hub and Github as both are necessary if you wish to fly your controller in the real world.
 
@@ -91,7 +91,7 @@ starling_controller
 
 We have the following folders and files.
 
-- *starling_controller* will be populated by user created ros packages. Anything in this folder is directly copied to the Dockerfile and built.
+- *starling_controller* will be populated by user-created ros packages. Anything in this folder is directly copied to the Dockerfile and built.
 - *deployment* contains a sample `docker-compose.yml` file which runs a default simulation stack, and a sample Kubernetes file for deployment, both will need to be edited to run properly.
 - *buildtools* contains the specification that Docker uses to build the container. It contains the naming for the Docker image.
 - *Dockerfile* specifies the build steps for this project. It already specifies the installation of a number of dependencies, including the [libInterpolate](https://github.com/CD3/libInterpolate) interpolation library.
@@ -108,7 +108,7 @@ make help # Shows the help screen
 
 This should successfuly build your project container which you can try and run or inspect. Currently it has no functionality so nothing can happen. Have a look inside the container using `make run_bash`.
 
-> *Note* On Windows you can either use WSL or have a look at some of the solutions [in this link](https://stackoverflow.com/questions/2532234/how-to-run-a-makefile-in-windows)
+> *Note* On Windows you can either use WSL to run the `make` commands. Alternatively, check out [this link](https://stackoverflow.com/questions/2532234/how-to-run-a-makefile-in-windows) for other solutions.
 
 ## Adding Nodes to your project
 

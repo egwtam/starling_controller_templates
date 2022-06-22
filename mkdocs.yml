@@ -34,6 +34,5 @@ nav:
     - "7. Local testing with Docker-Compose": "testing_with_docker_compose.md"
     - "8. Multi-UAV flight with Kubernetes for container deployment": "multiuav_kubernetes.md"
     - "9. Local Integration testing with KinD Digital Double": "testing_with_kind.md"
-    - "10. Bristol Robotics Laboratory Flying Arena" : "brl.md"
-    - "11. Flying your controllers in the Flying Arena": "brl_flight.md"
-    - "12. Wrapping up and next steps": "next_steps.md"
+    - "10. Flying your controllers in the Flying Arena": "brl_flight.md"
+    - "11. Wrapping up and next steps": "next_steps.md"

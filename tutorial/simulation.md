@@ -16,7 +16,7 @@ Thankfully, both Ardupilot and SITL can be run as *software in the loop* or *SIT
 
 Simulators allow flight code to control a computer modeled vehicle in a simulated "world". You can interact with this vehicle just as you might with a real vehicle, using QGroundControl, an offboard API such as ROS, or a radio controller/gamepad.
 
-Simulation is a quick, easy, and most importantly, safe way to test changes to your controller before attempting to fly in the real world. It is also a good way to start flying when you haven't yet got a vehicle to experiment with or dont want to damage it.
+Simulation is a quick, easy, and most importantly, safe way to test changes to your controller before attempting to fly in the real world. It is also a good way to start flying when you haven't yet got a vehicle to experiment with or don't want to damage it.
 
 From a Starling perspective, the MAVROS container does not distinguish between running on a real vehicle or running on SITL as both still speak the same version of MAVLINK. The MAVROS container internally handles connecting to the correct source.
 
@@ -194,10 +194,10 @@ root@ca5384b42f41:/ros_ws# ros2 node list
 /vehicle_1/ros_bridge
 ```
 
-and many others. We can also have a look at some of the topics. For example, if we wanted to look at the state of a vehicle 1, we would have a look at `/vehicle_1/mavros/local_posiiton/pose` (Press `ctrl+c` to stop the stream).
+and many others. We can also have a look at some of the topics. For example, if we wanted to look at the state of a vehicle 1, we would have a look at `/vehicle_1/mavros/local_position/pose` (Press `ctrl+c` to stop the stream).
 
 ```text
-root@ca5384b42f41:/ros_ws# ros2 topic echo /vehicle_1/mavros/local_posiiton/pose
+root@ca5384b42f41:/ros_ws# ros2 topic echo /vehicle_1/mavros/local_position/pose
 ---
 header:
   stamp:

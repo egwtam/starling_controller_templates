@@ -10,7 +10,7 @@ Bringing together the previous couple of tutorials, we can run our developed con
 
 ### Verify your controller
 
-First let us verify that our own controller is at least compiling properly. We should get something like the following, and then stop it using `ctrl+c`
+First, make sure you are in the root of your controller application. Now, let us verify that our own controller is at least compiling properly. We should get something like the following, and then stop it using `ctrl+c`
 
 ```text
 make run
@@ -68,7 +68,7 @@ NETWORK ID     NAME                 DRIVER    SCOPE
 
 We are interested in the network named `<something>_default` and not named bridge and host which are docker default networks. In our case `deployment_default` is the network created by docker compose when running the simulation stack. It should also be called `deployment_default` for you (the `<something>` is the parent folder of the docker compose file).
 
-Then re-run your controller with this new network. You can use the `NETWORK` variable from the Makefile
+Then re-run (close the previously running one with CTRL+C) your controller with this new network. You can use the `NETWORK` variable from the Makefile
 
 ```text
 make NETWORK=deployment_default run
@@ -115,7 +115,7 @@ This holds as long as
 2. Your application is written in such a way that it can be attached to the simulator at any time
 3. Your application hasn't put the simulator in an unrecoverable state! e.g. Flipped the vehicle upside down.
 
-Otherwise it is quite simple to simple make some changes to your own application and re-run your container using `make ... run` again **without having to exit the simulator**.
+Otherwise it is quite simple to make some changes to your own application and re-run your container using `make ... run` again **without having to exit the simulator**.
 
 > *Note:* This also applies to the terminal running the offboard node! Since its reactive, you dont need restart that either. ROS will simply patch the connection when your onboard controller is restarted.
 
