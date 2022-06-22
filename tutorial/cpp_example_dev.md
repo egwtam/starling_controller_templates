@@ -1,6 +1,6 @@
 # Developing the example controller with ROS2 in CPP
 
-Finally, the bit you have all been waiting for! In this tutorial, we will take you through how to develop and build the controller for the example scenario. This page is for the CPP controller in particular. By the end, you should have have a controller ready for testing.
+Finally, the bit you have all been waiting for! In this tutorial, we will take you through how to develop and build the controller for the example scenario. This page is for the CPP controller in particular. By the end, you should have a controller ready for testing.
 
 [TOC]
 
@@ -39,6 +39,8 @@ As with most languages, CPP has the standard control flow operations - if, for, 
 
 ## Overview of the Controller Template
 
+> **_Important:_**  Have the code open in your editor of choice and follow along with the explanation.
+
 Let us start by examining the CPP onboard controller in more detail. You can open up the project in visual studio code by navigating into your starling application directory and running `code .`
 
 As shown in the [creating a starling project tutorial](creating.md), the CPP onboard controller has the following structure:
@@ -63,11 +65,11 @@ We gave an overview there, but we didn't provide any details on what exactly the
 
 In addition to performing the application, this controller must take care of a number of normal functions before and after executing the actions of the application. This includes the following actions:
 
-- Ensuring and checking that the vehicle is receiving telemetry.
+- Ensuring and checking that the vehicle is receiving telemetry
 - Arming and Disarming the Vehicle before and after flight
 - Taking off from the ground and Landing safely
-- Going to the start location of the given task.
-- Taking instruction (such as go, abort and estop) and safely reacting to them from users.
+- Going to the start location of the given task
+- Taking instruction (such as go, abort and estop) and safely reacting to them from users
 
 It can be thought that the order and usage of these actions are fairly consistent over a large number of possible applications. Therefore this controller bundles these up as standard functionality within the main execution of the node.
 

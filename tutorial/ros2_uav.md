@@ -26,7 +26,7 @@ A *multi-rotor* is a specific type of UAV which uses two of more lift-generating
 
 A multicopter is a mechanically simple aerial vehicle whose motion is controlled by speeding or slowing multiple downward thrusting motor/propeller units. Combining different thrusts on different rotors allows the vehicle to move in free space with 6 degrees of freedom.
 
-However, manually controlling the individual thrusts of each motor in order to move the UAV is incredibly difficult, most would say its impossible even. This instability means that an on-board computer is mandatory for stable flight, as the on-board controller can perform the extreme high-rate control required to keep the drone in the air. In this "Fly by wire" paradigm, if the computer isnt working, you aren't flying.
+However, manually controlling the individual thrusts of each motor in order to move the UAV is incredibly difficult, most would say its impossible even. This instability means that an on-board computer is mandatory for stable flight, as the on-board controller can perform the extreme high-rate control required to keep the drone in the air. In this "Fly by wire" paradigm, if the computer isn't working, you aren't flying.
 
 This dedicated on-board controller is referred to as the *autopilot*. This is seperate from a companion computer which is often used to direct the autopilot to achieve higher level mission goals. The autopilot combines data from small on-board MEMs gyroscopes and accelerometers (the same as those found in smart phones) to maintain an accurate estimate of its orientation and position.
 
@@ -64,7 +64,7 @@ Both Ardupilot and PX4 use the concept of flight modes, where each mode operates
 
 As mentioned before, the firmware provides a given cascading PID controller for converting high level commands to motor thrusts. As a controller developer, it is also useful to understand the differences between the Ardupilot and PX4 controllers and what real world impacts that has. Thankfully in most of Starling's targeted applications we only require position control which works fairly consistently between the two firmwares.
 
-In our own work, it has generally been noted that Ardupilot seems to be more suitable for outdoor flight, and PX4 for indoor flight. For this tutorial we will be developing an  controller for indoor multi-vehicle flight and so we will assume the use of PX4.
+In our own work, it has generally been noted that Ardupilot seems to be more suitable for outdoor flight, and PX4 for indoor flight. For this tutorial we will be developing a controller for indoor multi-vehicle flight and so we will assume the use of PX4.
 
 If interested in outdoor flight with Ardupilot, check out [this tutorial](https://github.com/StarlingUAS/fenswood_volcano_template) which uses Starling with Ardupilot to simulate outdoor drone flight over a volcano.
 
@@ -86,7 +86,7 @@ In general, software developers avoid hardware like the plague. It's messy, does
 
 Most beginner programmers think you have to have a deep knowledge of electronics and even mechanics to program robots. They think that the hardware and software are so tightly coupled, you have to know both in depth to build anything useful.
 
-Software developers became software developers for a reason, so they don't have to deal with hardware. For example, lets say you have to debug a faulty sensor. You first have to take out the sensor from the enclosure, test the sensor thoroughly with a multi meter and various test cases, document its behavior, then examine the hardware -level code to ensure that there were no bugs, and so on. That's a lot of interaction with the hardware that's not fun for someone who just wants to write some cool software.
+Software developers became software developers for a reason, so they don't have to deal with hardware. For example, let's say you have to debug a faulty sensor. You first have to take out the sensor from the enclosure, test the sensor thoroughly with a multi meter and various test cases, document its behavior, then examine the hardware -level code to ensure that there were no bugs, and so on. That's a lot of interaction with the hardware that's not fun for someone who just wants to write some cool software.
 
 It's harder to attract good programmers if the programming is coupled deeply with hardware. This is where ROS comes into play. With ROS, you can completely abstract the hardware from software, and instead interact with an API that gives access to that data. You can forget about the hardware, and focus on developing the software that makes the robot do what you want.
 
@@ -212,6 +212,6 @@ As we are now utilising ROS, this allows us to make the most of the full ROS eco
 
 ## Next Steps
 
-Hopefully now you have a basic understanding of what a drone is and how they are controller, the function and purpose of an autopilot, as well as how ROS functions and can be used. If you want some early hands on experience with ROS before delving further into Starling, we highly recommend the [offical ros2 tutorials](https://docs.ros.org/en/foxy/Tutorials.html).
+Hopefully now you have a basic understanding of what a drone is and how they are controlled, the function and purpose of an autopilot, as well as how ROS functions can be used. If you want some early hands on experience with ROS before delving further into Starling, we highly recommend the [offical ros2 tutorials](https://docs.ros.org/en/foxy/Tutorials.html).
 
 We have one more theory topic before you can start creating your own Starling projects, where we will be discussing how Starling uses and encapsulates ROS functionality.

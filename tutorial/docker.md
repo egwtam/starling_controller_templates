@@ -95,10 +95,9 @@ docker run uobflightlabstarling/starling-mavros
 docker run uobflightlabstarling/starling-mavros:latest
 ```
 
-In another terminal, you can see what is currently running using:
+In another terminal, you can see what is currently running using `docker ps`:
 
 ```text
-docker ps
 CONTAINER ID   IMAGE                                  COMMAND                  CREATED          STATUS          PORTS     NAMES
 4fd1e0948f23   uobflightlabstarling/starling-mavros   "/ros_entrypoint.sh …"   46 seconds ago   Up 45 seconds             vigilant_nobel
 ```
@@ -119,10 +118,9 @@ Then you can navigate to `localhost:8080` in your web browser to see the simulat
 
 You can use the cursor to move around the environment, we will be coming back to the simulator in a [later section](simulation.md).
 
-To stop the simulator, you can try and use `ctrl+c`, but sometimes this doenst work. Another way is to first get the container ID or name like before:
+To stop the simulator, you can try and use `ctrl+c`, but sometimes this doenst work. Another way is to first get the container ID or name like before `docker ps`:
 
 ```text
-docker ps
 CONTAINER ID   IMAGE                                                    COMMAND                  CREATED         STATUS         PORTS                                         NAMES
 6a4bd538118c   uobflightlabstarling/starling-sim-iris-px4-flightarena   "/entrypoint.sh ros2…"   2 minutes ago   Up 2 minutes   7681/tcp, 11345/tcp, 0.0.0.0:8080->8080/tcp   trusting_diffie
 ```
@@ -147,7 +145,7 @@ docker rm 6a4bd538118c
 
 ### Creating Containers
 
-To create a Docker image we write a recipe, called a *Dockerfile*. A *Dockerfile* is a text file that specifies the commands required to create a Docker image, typically by modifying an existing container image using a scripting interface. They also have special keywords (which are always CAPITALIZED), like `FROM`, `RUN`, `ENTRYPOINT` and so on. For example, create a file called Dockerfile with the following content:
+To create a Docker image we write a recipe, called a *Dockerfile*. A *Dockerfile* is a text file that specifies the commands required to create a Docker image, typically by modifying an existing container image using a scripting interface. They also have special keywords (which are always CAPITALIZED), like `FROM`, `RUN`, `ENTRYPOINT` and so on. For example, create a file called `Dockerfile` with the following content:
 
 ```text
 FROM ros:foxy       # Defines the base image
@@ -213,7 +211,7 @@ This is helpful as if you try to build your container again, unless you change s
 
 ### Inspecting a container
 
-One of the downsides of containers is that manipulating files and inspecting the their state is not as simple. Previously, you could just browser through your own file system and check things. Now that a container has its own file system, its not as clear how you could check things have been set up correctly, or test run commands manually or similar.
+One of the downsides of containers is that manipulating files and inspecting their state is not as simple. Previously, you could just browser through your own file system and check things. Now that a container has its own file system, its not as clear how you could check things have been set up correctly, or test run commands manually or similar.
 
 There are a number of different ways, but the simplest way is to `exec` into a running container. As an example, you can run `starling-mavros` again in one terminal.
 
@@ -253,7 +251,7 @@ This opens up a terminal inside the container for you to navigate around and ins
 
 Finally, we bring in ros2 and uav control from the [previous tutorial](ros2_uav.md). In Starling, there exists a core container called `starling-mavros` which facilitates the communication between the user application and the UAV autopilot in simulation or reality.
 
-This container, which you have hopefully run above, uses a Mavros node is to translate between ROS2 for the user, and MAVLINK for the autopilot.
+This container, which you have hopefully run above, uses a Mavros node to translate between ROS2 for the user, and MAVLINK for the autopilot.
 
 We give examples of its use later on.
 

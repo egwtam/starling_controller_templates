@@ -6,11 +6,11 @@ This tutorial takes you through using the Starling templates repository to gener
 
 ## Prerequists
 
-In order to complete this tutorial, you will need the following installed. You may have already installed these within [Getting Strted](getting_started.md)
+In order to complete this tutorial, you will need the following installed. You may have already installed these within [Getting Strted](getting_started.md).
 
 The template generation uses the [`cookiecutter`](https://cookiecutter.readthedocs.io/en/stable/README.html) tool for generating custom projects from a template.
 
-Then run:
+To install it run:
 
 ```sh
 python3 -m pip install --user cookiecutter
@@ -20,7 +20,7 @@ easy_install --user cookiecutter
 
 > See [cookiecutter installation](https://cookiecutter.readthedocs.io/en/stable/installation.html) for further details on different platforms.
 
-This will give you access to the `cookiecutter` command line interface.
+This will give you access to the `cookiecutter` command line interface, which is used in this [section](#generating-the-base-starling-project).
 
 > Recommendation is to sign up for Docker Hub and Github, necessary if you wish to fly your controller in the real world.
 
@@ -91,7 +91,7 @@ starling_controller
 
 We have the following folders and files.
 
-- *starling_controller* will be populated by user created ros packages. Anything in this folder is directly  copied to the Dockerfile and built.
+- *starling_controller* will be populated by user-created ros packages. Anything in this folder is directly  copied to the Dockerfile and built.
 - *deployment* contains a sample docker-compose file which runs a default simulation stack, and a sample kubernetes file for deployment, both will most definitely need to be edited.
 - *buildtools* contains the specification that docker uses to build the container. It contains the naming for the docker image.
 - *Dockerfile* contains the dockerfile which specifies the build steps for this project. It already specifies the installation of a number of dependencies, including [libInterpolate](https://github.com/CD3/libInterpolate) interpolation library.
@@ -108,7 +108,7 @@ make help # Shows the help screen
 
 This should successfuly build your project container which you can try and run or inspect. Currently it has no funcionality so nothing can happen. Have a look inside the container using `make run_bash`.
 
-> *Note* On windows you can either use WSL or have a look at some of the solutions [in this link](https://stackoverflow.com/questions/2532234/how-to-run-a-makefile-in-windows)
+> *Note* To run a Makefile on windows you can either use WSL or have a look at some of the solutions [in this link](https://stackoverflow.com/questions/2532234/how-to-run-a-makefile-in-windows)
 
 ## Adding Nodes to your project
 
@@ -276,13 +276,13 @@ The Dockerfile in this template contains the command line instructions to build 
 
 By default it will install a number of useful libraries for compatibility.
 
-> If you need any new libraries, you will have to add their installation here
+> If you need any new libraries, you will have to add their installation here.
 
 It then essentially copies in all of the rosnodes specified within the project name directory and runs them through the standard ROS2 build tool named `colcon`.
 
 It also copies over the `run.sh` file which the Dockerfile will run on container startup. Therefore the `run.sh` should have the instructions for running your applications.
 
-Thankfully you do not need to run `docker build` automatically as we have setup a special build system which is wrapped up inside the `Makefile`.
+Thankfully you do not need to run `docker build` as we have setup an automatic special build system which is wrapped up inside the `Makefile`.
 
 ## Running your new project
 
