@@ -120,15 +120,11 @@ Once the cluster has started, we can start the general UAV simulator.
 
 > **IMPORTANT**: The simulator can potentially be resource heavy to run. This is with respect to both CPU usage and RAM. Before going further, please ensure you have enough space on your primary drive (at least 30Gb to be safe, especially C drive on windows). This is especially true if running multiple vehicles. It is not recommended to run more than around 6.
 
-First we should load or download the required simulation containers locally. This can be done using the follwoing command. We need to run the load command as we want to load the local container images into the kind container. This avoids the need for the kind containers to download the containers themselves at each runtime.
+First we should load or download the required simulation containers locally. This can be done using the following command. We need to run the load command as we want to load the local container images into the kind container. This avoids the need for the kind containers to download the containers themselves at each runtime. This is achieved by starting a local container registry (just like docker hub), loading our containers into there, and getting the KinD containers to first look there when looking for containers.
 
 > This command can take as long as 30 minutes depending on internet connection. It goes through the deployment files and downloads a couple of large containers e.g. the gazebo and sitl containers.
 
 > If the container doesn't already exist locally, it will attempt to download it from docker hub
-
-```
-starling simulator load
-```
 
 > *Note:* The `--brl` option automatically loads up the BRL flight arena simulated doubles
 
@@ -157,6 +153,8 @@ daemonset.apps/starling-mavros-daemon created
 ```
 
 With any luck, this should again open up the simulator on [`localhost:8080`](http://localhost:8080) (no UI yet though we havent started it).
+
+![gazebo](imgs/multiuav/gazebo_2drones.png)
 
 ### Monitoring the cluster
 

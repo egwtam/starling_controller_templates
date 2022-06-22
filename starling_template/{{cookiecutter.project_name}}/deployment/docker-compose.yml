@@ -8,7 +8,7 @@ services:
       - "8080:8080"
 
   sitl:
-    image: uobflightlabstarling/starling-sim-px4-sitl:nightly
+    image: uobflightlabstarling/starling-sim-px4-sitl:latest
     environment:
       - "PX4_SIM_HOST=simhost"
       - "PX4_OFFBOARD_HOST=mavros"
@@ -18,7 +18,7 @@ services:
       - "18570:18570/udp"
 
   mavros:
-    image: uobflightlabstarling/starling-mavros:nightly
+    image: uobflightlabstarling/starling-mavros:latest
     command: ros2 launch launch/mavros_bridge.launch.xml
     environment:
       - "MAVROS_TGT_SYSTEM=1"
