@@ -10,18 +10,58 @@ Now, I know what you might not be thinking at this point- "Oh great, yet another
 
 It certainly is true that we could conduct multi-uav simulation testing with the docker and docker-compose tools that we already have (in fact we have a number [here](https://github.com/StarlingUAS/Murmuration/tree/main/docker-compose/px4)), but this runs into a problem. How do we transition from simply running our developed controller against a simulation, to developing, validating and testing a controller which will be deployed on real hardware?
 
+Quick anwser - we use container deployment to provide us not only with a physical representation of the BRL, but also build us a full software simulation of the systems we use in the BRL. Proper Integration testing!
+
 ### Multi-UAV Flight
 
+The problem with Multi-UAV flight is scalability. As mentioned in an earlier tutorial, traditionally in drone applications single vehicles are often flown by wire using a telemetry link from a ground computer or companion computer. This involved the manual configuration of networks and ports between different parts, as well as the manual loading of software onto the drones. On top of pinning the drone hardware to a particular application, repeating this process for multiple drones is both tedious and inefficient.
+
+In Starling we have identified that if vehicle's could automatically setup it's own environment, networking and ports, and accept software deployments, we could mitigate many of the above problems.
+
+This whole approach is drawn from the observation that a modern drone is simply flying compute, and therefore a group of drones are analogous to a computation cluster. Compute cluster's also have to deal with networking, software deployment, scability and so on - and they have built tools and systems to do this. Therefore in Starling we apply these tools to aid us in Multi-UAV flight.
 
 ![starling1](imgs/multiuav/starling1.png)
 
 ### Container Orchestration and Kubernetes
 
+In a compute cluster, we often want to deploy our applications (now-a-days containerised) and run them on a specific dedicated machine. This could be because the application needs a GPU, or requires lots of storage or perhaps it doesnt need any of those and just need CPU time. Regadless, the *container orchestrator* is the one in charge of ensuring that applications are deployed to where they need to be.
+
+In Starling, we make use of the popular [*Kubernetes*](https://kubernetes.io/) open source orchestrator. It is Kubernetes (aka k8) job to deploy one or more groups of containers (a.k.a *Pods*) to one or more drones (a.k.a compute *Nodes*) within its cluster. Through doing this, it also manages the inter-vehicle network, scaling to more vehicles, vehicle failure and recovery, automatic connection on startup and many of the features.
+
+The below diagram shows this in action with the deployment of multiple containers on different vehicles, as well as other containers on the main cluster server machine offboard the vehicles. By default we have the following deployment 'rules' in place:
+
+- Every 'vehicle' has the MAVROS container deployed to it.
+- Every 'clover' (a type of UAV we are using) has the Clover Hardware Container deployed to it.
+- Every 'multirotor' has the User's onboard controller deployed to it.
+- The offboard, gui and safety monitor are restricted to only be deployed on the 'master' node.
+
+These deployment rules are applied through the use of Kubernetes configuration files which we will detail in the next tutorial.
+
+![simplearch](imgs/multiuav/simpledeployment1.png)
+
+
+There exists a well known NASA Mantra of **`Test Like You Fly'**. Therefore we have good reason to not just use Docker-Compose for all our testing.
+
+1. Docker compose is designed for running containers locally on one machine and has no ability for deployment, so it's not used on with the real vehicles.
+2. Kubernetes adds an extra layer of complexity which needs to be tested before deploying into the real world.
 
 ### Integration Testing with KinD
 
+Wrapping back round to testing your own controllers, how do we do reasonable integration testing if we need a compute cluster with multiple nodes to do it! This is where containerisation comes back to the rescue again! Specifically, we use the Kubernetes in Docker (KinD) to do ... Docker inside Docker testing!
 
-## Running the Multi-UAV Simulator
+Recall that a container simply encapsulates other programs. There is nothing stopping you from running more containers inside the existing container. KinD leverages this to spin up a container for each simulated node in your cluster. These nodes are automatically connected together as if they were a compute cluster on real hardware.
+
+KinD therefore has two types of container, a control plane and a worker. The control plane is the K8 server, and the workers are the nodes. Starling wraps KinD with automatic functionality which labels workers as UAVs allowing existing deployments to function identically to the real world. The only addition is that in place of the real world, we have our gazebo digital double simulator instead.
+
+![kind](imgs/multiuav/kind_deployment.png)
+
+
+Importantly the user interface between K8s on KinD is identical to that on the real vehicles, allowing you to test run deployments and networking as if you were in the real world - voila! Integration testing!
+
+![inttest](imgs/multiuav/integration_testing.png)
+
+
+## Running the Multi-UAV Integration Testing Stack
 
 ### Installing Mumuration and Starling CLI
 
@@ -229,3 +269,7 @@ starling stop kind
 > *Note:* You will have to start everything up again after restarting - dashboard, load images, start brl simulator.
 
 ## Next Steps
+
+Good job on getting to the end! This is one of the more content dense sections in this tutorial. Hopefully you now have a basic understanding to why Starling goes to the complexity of using Kubernetes and the benefits it can bring. In addition you should have learnt about what KinD is, why and how we use it in conjunction with the Starling CLI for integration testing.
+
+Now you know how the integration test stack can be run, it's time to get your controllers in and see how they work with multiple vehicles!
