@@ -1,116 +1,71 @@
 # Multi-UAV flight with Kubernetes for container deployment
 
-In this tutorial we will be introducing the idea of container deployment and why that fits into the goals of what Starling is trying to achieve. We will then show how to run the multi-drone cluster simulation enviornment ready for further multi-drone local development and testing.
+In this tutorial, we will introduce the idea of container deployment and why that fits into the goals of what Starling is trying to achieve. We will then show how to run the multi-drone cluster simulation environment for multi-drone local development and testing.
 
-Now, I know what you might not be thinking at this point- "Oh great, yet another layer of complexity to learn... grumble grumble" - but alas! wait a minute, we strongly believe that this step is what sets Starling apart from other methodlogies and workflows, and hopefully you'll have an idea of that in the next two tutorials!
+Now, I know what you might not be thinking at this point- "Oh yay, another layer of complexity to learn... grumble grumble" - but hold up! Container development is key to what sets Starling apart from other frameworks so it is important for you to understand how this works.
 
 [TOC]
 
 ## Kubernetes, Multi-UAV Flight and Integration Testing
 
-It certainly is true that we could conduct multi-uav simulation testing with the docker and docker-compose tools that we already have (in fact we have a number [here](https://github.com/StarlingUAS/Murmuration/tree/main/docker-compose/px4)), but this runs into a problem. How do we transition from simply running our developed controller against a simulation, to developing, validating and testing a controller which will be deployed on real hardware?
+It certainly is possible to conduct multi-UAV simulation testing with the Docker and Docker-Compose tools we already have (in fact we have a number [here](https://github.com/StarlingUAS/Murmuration/tree/main/docker-compose/px4)), but this runs into a problem: how do we transition from running our developed controller against a simulation, to developing, validating and testing a controller which will be deployed on real hardware?
 
-Quick anwser - we use container deployment to provide us not only with a physical representation of the BRL, but also build us a full software simulation of the systems we use in the BRL. Proper Integration testing!
+Quick answer - we use container deployment to provide us not only with a physical representation of the BRL, but also a full software simulation of the systems we use in the BRL.
 
 ### Multi-UAV Flight
 
-The problem with Multi-UAV flight is scalability. As mentioned in an earlier tutorial, traditionally in drone applications single vehicles are often flown by wire using a telemetry link from a ground computer or companion computer. This involved the manual configuration of networks and ports between different parts, as well as the manual loading of software onto the drones. On top of pinning the drone hardware to a particular application, repeating this process for multiple drones is both tedious and inefficient.
+A major problem with multi-UAV flight is scalability. Traditionally in drone applications, single vehicles are often flown by wire using a telemetry link from a ground computer or companion computer. This involved the manual configuration of networks and ports between different parts, as well as the manual loading of software onto the drones. On top of pinning the drone hardware to a particular application, repeating this process for multiple drones is both tedious and inefficient.
 
-In Starling we have identified that if vehicle's could automatically setup it's own environment, networking and ports, and accept software deployments, we could mitigate many of the above problems.
+If vehicles could automatically set up their own environment, networking and ports, and accept software deployments, we could mitigate many of the above problems. That's where Starling comes in!
 
-This whole approach is drawn from the observation that a modern drone is simply flying compute, and therefore a group of drones are analogous to a computation cluster. Compute cluster's also have to deal with networking, software deployment, scability and so on - and they have built tools and systems to do this. Therefore in Starling we apply these tools to aid us in Multi-UAV flight.
+This whole approach is drawn from the observation that a modern drone is simply flying compute, and therefore a group of drones are analogous to a computation cluster. Compute clusters also have to deal with networking, software deployment, scalability and so on - and they have tools and systems to do this. In Starling, we apply similar tools to aid us in Multi-UAV flight.
 
 ![starling1](imgs/multiuav/starling1.png)
 
 ### Container Orchestration and Kubernetes
 
-In a compute cluster, we often want to deploy our applications (now-a-days containerised) and run them on a specific dedicated machine. This could be because the application needs a GPU, or requires lots of storage or perhaps it doesnt need any of those and just need CPU time. Regadless, the *container orchestrator* is the one in charge of ensuring that applications are deployed to where they need to be.
+In a compute cluster, we often want to deploy our applications (preferably containerised) and run them on a specific dedicated machine. This could be because the application needs a GPU, or requires lots of storage or perhaps it doesnt need any of those and just need CPU time. Regardless, the *container orchestrator* is the one in charge of ensuring that applications are deployed to where they need to be.
 
-In Starling, we make use of the popular [*Kubernetes*](https://kubernetes.io/) open source orchestrator. It is Kubernetes (aka k8) job to deploy one or more groups of containers (a.k.a *Pods*) to one or more drones (a.k.a compute *Nodes*) within its cluster. Through doing this, it also manages the inter-vehicle network, scaling to more vehicles, vehicle failure and recovery, automatic connection on startup and many of the features.
+In Starling, we make use of the popular [*Kubernetes*](https://kubernetes.io/) open source orchestrator. It is Kubernetes (aka K8) job to deploy one or more groups of containers (a.k.a *Pods*) to one or more drones (a.k.a compute *Nodes*) within its cluster. Through doing this, it also manages the inter-vehicle network, scaling to more vehicles, vehicle failure and recovery, automatic connection on startup and many other features.
 
 The below diagram shows this in action with the deployment of multiple containers on different vehicles, as well as other containers on the main cluster server machine offboard the vehicles. By default we have the following deployment 'rules' in place:
 
 - Every 'vehicle' has the MAVROS container deployed to it.
 - Every 'clover' (a type of UAV we are using) has the Clover Hardware Container deployed to it.
 - Every 'multirotor' has the User's onboard controller deployed to it.
-- The offboard, gui and safety monitor are restricted to only be deployed on the 'master' node.
+- The offboard, GUI and safety monitor are restricted to only be deployed on the 'master' node.
 
 These deployment rules are applied through the use of Kubernetes configuration files which we will detail in the next tutorial.
 
 ![simplearch](imgs/multiuav/simpledeployment1.png)
 
+There exists a well known NASA Mantra of **`Test Like You Fly'**. Therefore we have good reason to not just use Docker-Compose for all our testing:
 
-There exists a well known NASA Mantra of **`Test Like You Fly'**. Therefore we have good reason to not just use Docker-Compose for all our testing.
-
-1. Docker compose is designed for running containers locally on one machine and has no ability for deployment, so it's not used on with the real vehicles.
+1. Docker-Compose is designed for running containers locally on one machine and has no capability for deployment, so it cannot be used on real vehicles.
 2. Kubernetes adds an extra layer of complexity which needs to be tested before deploying into the real world.
 
 ### Integration Testing with KinD
 
-Wrapping back round to testing your own controllers, how do we do reasonable integration testing if we need a compute cluster with multiple nodes to do it! This is where containerisation comes back to the rescue again! Specifically, we use the Kubernetes in Docker (KinD) to do ... Docker inside Docker testing!
+Wrapping back round to testing your own controllers... how can we do reasonable integration testing if we need a compute cluster with multiple nodes? This is where containerisation comes back to the rescue! Specifically, we use the Kubernetes in Docker (KinD) to do ... Docker inside Docker testing!
 
-Recall that a container simply encapsulates other programs. There is nothing stopping you from running more containers inside the existing container. KinD leverages this to spin up a container for each simulated node in your cluster. These nodes are automatically connected together as if they were a compute cluster on real hardware.
+Recall that a container simply encapsulates other programs. There is nothing stopping you from running more containers inside the existing container. KinD leverages this by spinning up a container for each simulated node in your cluster. These nodes are automatically connected together as if they were a compute cluster on real hardware.
 
-KinD therefore has two types of container, a control plane and a worker. The control plane is the K8 server, and the workers are the nodes. Starling wraps KinD with automatic functionality which labels workers as UAVs allowing existing deployments to function identically to the real world. The only addition is that in place of the real world, we have our gazebo digital double simulator instead.
+KinD therefore has two types of container: a control plane and a worker. The control plane is the K8 server, and the workers are the nodes. Starling wraps KinD with automatic functionality which labels workers as UAVs, allowing existing deployments to function identically to the real world. The only addition is that in place of the real world, we have our Gazebo digital double simulator instead.
 
 ![kind](imgs/multiuav/kind_deployment.png)
 
-
-Importantly the user interface between K8s on KinD is identical to that on the real vehicles, allowing you to test run deployments and networking as if you were in the real world - voila! Integration testing!
+Crucially, the user interface between K8s on KinD is identical to that on the real vehicles. This means you can easily run deployments and networking as if you were in the real world. Voila! Integration testing!
 
 ![inttest](imgs/multiuav/integration_testing.png)
 
 
 ## Running the Multi-UAV Integration Testing Stack
 
-### Installing Mumuration and Starling CLI
-
-You will need to download the [Murmuration repository](https://github.com/StarlingUAS/Murmuration) which contains a useful command line interface (cli). This can hopefully abstract away the need to remember all of the different commands.
-
-To install, go to your work directory and clone the repository using the command line or gui and run the following commands:
-
-```bash
-git clone https://github.com/StarlingUAS/Murmuration.git # clones locally
-cd Murmuration
-```
-
-In the bin directory of the repository, there is the core cli script named `starling`. `starling` includes a further installation script to help install further requirements. This installation script will need to be run using root. See the following guide on which arguments you should give.
-
-Then to finish the installation run:
-
-```bash
-sudo starling install
-# or if you have not added starling to path and are in the Murmuration directory.
-sudo ./bin/starling install
-```
-
-> If running within Murmuration, swap `starling` for `./bin/starling`. However for convenience, you can put `starling` onto your path. This can be done by adding `export PATH=<Path to murmuration>/bin:$PATH` into `~/.bashrc` followed by `source ~/.bashrc` , or running the same command locally in the terminal. Then you can use the `starling`
-
-With this you have the starling cli which incorporates the most used functionality of running Starling UAV systems. You can see the available commands like so
-
-```console
-> starling help
-starling
-
-Starling CLI
-
-Usage: starling [command]
-
-Commands:
-
-  deploy	Starts Starling Server
-  install	Installs Base Starling Dependencies
-  simulator	Starts Starling Server
-  start	Starts Starling Server
-  status		Starts Starling Server
-  stop		Stops Starling Server
-  utils		Utility functions
-  *		Help
-```
+> Prerequisites: [Getting Started](getting_started.md)
 
 ### Running the Multi-Drone Cluster
 
-Start a cluster of 2 drones.
+Start a cluster of 2 drones by running the following:
 
 ```bash
 starling start kind -n 2
@@ -118,13 +73,13 @@ starling start kind -n 2
 
 Once the cluster has started, we can start the general UAV simulator.
 
-> **IMPORTANT**: The simulator can potentially be resource heavy to run. This is with respect to both CPU usage and RAM. Before going further, please ensure you have enough space on your primary drive (at least 30Gb to be safe, especially C drive on windows). This is especially true if running multiple vehicles. It is not recommended to run more than around 6.
+> **IMPORTANT**: The simulator can potentially be resource heavy to run, w.r.t both CPU usage and RAM. Before going further, please ensure you have enough space on your primary drive (at least 30Gb to be safe - check your C drive on Windows). This is especially important if running multiple vehicles. We do not recommend you run more than 6 vehicles at a time.
 
-First we should load or download the required simulation containers locally. This can be done using the following command. We need to run the load command as we want to load the local container images into the kind container. This avoids the need for the kind containers to download the containers themselves at each runtime. This is achieved by starting a local container registry (just like docker hub), loading our containers into there, and getting the KinD containers to first look there when looking for containers.
+First, we should load or download the required simulation containers locally. We need to run the `load` command as we want to load the local container images into the KinD container. This saves the KinD containers from having to download the containers themselves during runtime. This is achieved by starting a local container registry (just like Docker Hub), loading our containers into there, and getting the KinD containers to look there first when looking for containers.
 
-> This command can take as long as 30 minutes depending on internet connection. It goes through the deployment files and downloads a couple of large containers e.g. the gazebo and sitl containers.
+> This command can take as long as 30 minutes depending on your internet connection. It goes through the deployment files and downloads a couple of large containers e.g. the `gazebo` and `sitl` containers.
 
-> If the container doesn't already exist locally, it will attempt to download it from docker hub
+> If the container doesn't already exist locally, it will attempt to download it from Docker Hub
 
 > *Note:* The `--brl` option automatically loads up the BRL flight arena simulated doubles
 
@@ -132,7 +87,7 @@ First we should load or download the required simulation containers locally. Thi
 starling simulator load --brl
 ```
 
-Then once downloaded and loaded (this might take a minute), you can start the simulator using the `start` command.
+Once loading completes, you can then start the simulator using the `start` command:
 
 ```bash
 starling simulator start --brl
@@ -140,7 +95,7 @@ starling simulator start --brl
 starling simulator start --brl --load
 ```
 
-With an output like the following:
+This should print the following output:
 
 ```text
 Starting simulator
@@ -152,7 +107,7 @@ Converting to use local registry at localhost:5001
 daemonset.apps/starling-mavros-daemon created
 ```
 
-With any luck, this should again open up the simulator on [`localhost:8080`](http://localhost:8080) (no UI yet though we havent started it).
+With any luck, this should again open up the simulator on [`localhost:8080`](http://localhost:8080) (the page will be empty as the UI has not been started though).
 
 ![gazebo](imgs/multiuav/gazebo_2drones.png)
 
@@ -164,11 +119,11 @@ A dashboard can be started to monitor the state of your current cluster.
 starling start dashboard
 ```
 
-This will start up the [kubernetes dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/). To access the dashboard, open up a browser and go to https://localhost:31771.
+This will start up the [Kubernetes dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/). To access the dashboard, open up a browser and go to http://localhost:31771.
 
-> Note the browser may not like the security, we promise it is safe to access! If you click 'advanced options' and 'continue to website' you should be able to access the website.
+> Note the browser may grumble about the security but it is safe to access! Please click 'Advanced Options' and 'Continue to website' to proceed.
 
-To log on, the above command should show something like the following:
+The above command should show something like the following:
 
 ```console
 The Dashboard is available at https://localhost:31771
@@ -181,7 +136,7 @@ Note: your browser may not like the self signed ssl certificate, ignore and cont
 To get the token yourself run: kubectl -n kubernetes-dashboard describe secret admin-user-token
 ```
 
-You can copy the `<LONG TOKEN>` and paste it into the dashboard token. You can also get the access token again by running:
+You will need the `<LONG TOKEN>` to log in. Copy and paste it into the Dashboard token. To get the access token again, run:
 
 ```
 starling utils get-dashboard-token
@@ -191,29 +146,29 @@ starling utils get-dashboard-token
 
 > For a more specific tutorial on the dashboard [go to this page in the starling docs](https://docs.starlinguas.dev/details/kubernetes-dashboard/)!
 
-This web dashboard shows you all of statuses of all things within the simulated cluster you have started. It can be rather overwhelming, but you'll be thankful knowing that in general you only need to interact with a few elements. Once you open the dashboard you are on the workloads page, this just gives you an overview of everything that is running. If it's green you're all good!
+This web dashboard shows the status of everything in the simulated cluster. It may look overwhelming, but in this tutorial, you'll only need to interact with a few of the elements. Opening the dashboard takes you firstly to the `Workloads` page. This gives you an overview of everything that is running. If it's green, you're all good!
 
 ![d1](imgs/multiuav/dashboard_1.png)
 
-You can see the nodes in the cluster by scrolling down on the left side bar and clicking nodes. Here we see the server (control plane) and 2 drones (workers)
+You can see the nodes in the cluster by scrolling down on the left sidebar and clicking `Nodes`. Here we see the server (control plane) and 2 drones (workers).
 
 ![d3](imgs/multiuav/dashboard_3.png)
 
-On the right side bar the **pods** button brings you to a list of all the groups of containers (pods) running on the cluster right now. We can see 1 gazebo pod, 2 px4 and 2 mavros, representing two drones and a simulator.
+On the right sidebar the **pods** button brings you to a list of all the groups of containers (pods)  currently running on the cluster. We can see 1 Gazebo pod, 2 px4 and 2 mavros, representing two drones and a simulator.
 
 ![d2](imgs/multiuav/dashboard_2.png)
 
-Finally you can click on any one of the pods to access that containers logs, as well as exec into them if you want to run stuff.
+Finally, you can click on any one of the pods to access that container's logs, as well as `exec` into them if you want to run stuff.
 
 ![d4](imgs/multiuav/dashboard_4.png)
 
-> Navigate around and have a look at the running pods, see if you recognised some of the printouts from when you just ran docker-compose.
+> Navigate and have a look at the running pods. See if you recognise some of the printouts from when you just ran `docker-compose`.
 
-> *Note:* The dashboard is definitely overspecified for our needs, but it already existed and was a good resource. We have a project which is all about building an equivalent replacement which suits our needs!
+> *Note:* The dashboard is definitely overspecified for our needs, but it already existed and was a good resource. We have a upcoming project to building a similar, more customised replacement which better suits our needs.
 
-Finally, for very quick diagnostics, you can also monitor the system using.
+Finally, for very quick diagnostics, you can also monitor the system using:
 
-```consle
+```console
 $ starling status
 # or to continually watch
 $ starling status --watch
@@ -244,30 +199,30 @@ starling-px4-sitl-daemon   2         2         2       2            2           
 
 ### Restarting on Stopping the Simulator
 
-So to recap, there are two parts to our Starling integration test simulator. There is the cluster, and then there is our uav simulation running within the cluster.
+To recap, there are two parts to our Starling integration test simulator. There is the cluster, and then there is our UAV simulation running within the cluster.
 
-If the UAV simulation seems to broken or you have put it in an unrecoverable state, you can restart the UAV simulation without deleting the cluster, simply by using the `restart` command with the simulator:
+If the UAV simulation seems broken or you have put it in an unrecoverable state, you can restart the UAV simulation without deleting the cluster by running the `restart` command on the simulator:
 
 ```console
 starling simulator restart --brl
 ```
 
-> *Note:* This will stop the simulator by deleting all deployments within the cluster, and the restart. You can remove all deployments by using `starling simulator stop`.
+> *Note:* This will stop the simulator by deleting all deployments within the cluster, and then restart. You can remove all deployments using `starling simulator stop`.
 
-> *Note:* Dont forget to include the `--brl` so it knows what to start up again.
+> *Note:* Don't forget to include the `--brl` so it knows what to start up again.
 
-If you have finished testing for the day, something fundamental to the cluster has gone wrong (e.g. failed to connect to ports, networking etc), or you wish to change the number of drones in your cluster, you can stop and delte the cluster and everything in it by running.
+If you have finished testing for the day, something fundamental to the cluster has gone wrong (e.g. failed to connect to ports, networking etc), or you wish to change the number of drones in your cluster, you can stop and delete the cluster and everything in it by running:
 
 ```console
 starling stop kind
 ```
 
-> *Note:* This will remove all of the loaded internal images again, so you will need to load them in next time you start the cluster. (However there is an option of `--keep_registry`).
+> *Note:* This will remove all of the loaded internal images again, so you will need to load them in next time you start the cluster (alternatively, you can keep them by adding the argument `--keep_registry`).
 
-> *Note:* You will have to start everything up again after restarting - dashboard, load images, start brl simulator.
+> *Note:* You will have to start everything up again after restarting - the dashboard, loading images, starting the brl simulator.
 
 ## Next Steps
 
-Good job on getting to the end! This is one of the more content dense sections in this tutorial. Hopefully you now have a basic understanding to why Starling goes to the complexity of using Kubernetes and the benefits it can bring. In addition you should have learnt about what KinD is, why and how we use it in conjunction with the Starling CLI for integration testing.
+Good job on getting to the end! This is one of the denser sections in this tutorial. Hopefully you now have a basic understanding on why Starling goes to the complexity of using Kubernetes and the benefits it can bring. In addition, you have learnt what KinD is, and why and how we use it in conjunction with the Starling CLI for integration testing.
 
 Now you know how the integration test stack can be run, it's time to get your controllers in and see how they work with multiple vehicles!

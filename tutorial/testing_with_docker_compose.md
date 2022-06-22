@@ -10,7 +10,7 @@ Bringing together the previous couple of tutorials, we can run our developed con
 
 ### Verify your controller
 
-First, make sure you are in the root of your controller application. Now, let us verify that our own controller is at least compiling properly. We should get something like the following, and then stop it using `ctrl+c`
+First, make sure you are in the root of your controller application. Now, let us verify that our own controller is at least compiling properly. We should get something like the following, and then stop it using `ctrl+c`:
 
 ```text
 make run
@@ -54,7 +54,7 @@ starling deploy -f deployment/docker-compose.yml start --pull
 
 To access the simulator, go to [`localhost:8080`](http://localhost:8080/), and to access the simple UI, go to [`localhost:3000`](http://localhost:3000/).
 
-In order for the controller to connect to the simulator, we need to find out which **docker network** the simulator is running on.
+In order for the controller to connect to the simulator, we need to find out which **Docker network** the simulator is running on.
 
 To view the current docker networks, in a second terminal run
 
@@ -66,7 +66,7 @@ NETWORK ID     NAME                 DRIVER    SCOPE
 1059b63b6f59   host                 host      local
 ```
 
-We are interested in the network named `<something>_default` and not named bridge and host which are docker default networks. In our case `deployment_default` is the network created by docker compose when running the simulation stack. It should also be called `deployment_default` for you (the `<something>` is the parent folder of the docker compose file).
+We are interested in the network named `<something>_default` and not named bridge and host which are Docker default networks. In our case `deployment_default` is the network created by docker compose when running the simulation stack. It should also be called `deployment_default` for you (the `<something>` is the parent folder of the docker compose file).
 
 Then re-run (close the previously running one with CTRL+C) your controller with this new network. You can use the `NETWORK` variable from the Makefile
 
@@ -101,7 +101,7 @@ Repeating the previous steps to start the main controller on the network, we the
 
 ![dc_test_example2](imgs/testing_dc/starling_dc_example2.gif)
 
-Oh dear it looks like this example is almost there, but starts flying off of the circle erratically, how could this be! How do I develop this container without having to stop and start everything.
+Oh dear! It looks like this example is almost there, but starts flying off of the circle erratically. Hmm, how can I develop this container without having to stop and start everything...?
 
 ## Developing with the Simulator
 
@@ -109,7 +109,7 @@ You may have noticed that we started the simulator, and your controller seperate
 
 ![testing_with_dc](imgs/testing_dc/docker-compose-controller-workflow.png)
 
-This holds as long as
+This holds as long as:
 
 1. Your application has been run on the same network as the simulator
 2. Your application is written in such a way that it can be attached to the simulator at any time
@@ -125,6 +125,6 @@ And now finding the bug in my `smExecute` function, my controller now does what 
 
 ## Next Steps
 
-**Congrats!** 🥳 You hopefully now have a working and tested starling application. With luck, you now also have a better understanding of how to use Starling and its containers to quickly develop and prototype your controllers.
+**Congrats!** 🥳 You hopefully now have a working and tested Starling application. With luck, you now also have a better understanding of how to use Starling and its containers to quickly develop and prototype your controllers.
 
-However, we still have one part of the brief to go - the customer wanted a multi-drone application! In the next few tutorials we will take you through how to build, develop and test your application in a multi-drone setup which will take you closer to flying on the real drones at the BRL.
+However, we still have one part of the brief to go - the customer wanted a multi-drone application! In the next few tutorials we will take you through how to build, develop and test your application in a multi-drone setup which will take you closer to flying real drones at the BRL.

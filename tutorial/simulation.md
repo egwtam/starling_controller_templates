@@ -6,17 +6,17 @@ In this tutorial we will cover how a UAV simulation works and introduce Gazebo, 
 
 ## UAV Simulation
 
-Often UAV Simulation is solely focussed on trying to recreate the dynamics of UAV flight. In Starling however, we have decided to leave that to the physics simulator experts, and instead focus on the Simulation of systems and architecture involved with UAV flight. This is with the goal to make transferring control from simulation to real hardware as streamlined and straight forward as possible.
+Often UAV Simulation is solely focused on trying to recreate the dynamics of UAV flight. In Starling however, we have decided to leave that to the physics simulator experts, and instead focus on the simulation of systems and architecture involved with UAV flight. This is with the goal to make transferring control from simulation to real hardware as streamlined and straight forward as possible.
 
-In the previous section on [UAV control](ros2_uav.md) we said that a core part of UAV control is the *Autopilot*. It is a physical computer which takes sensor inputs to create motor voltages to spin the motor. To re-create this as close as possible, we would like to simulate all of this to ensure that the operation of the uav is as close to reality as possible.
+In the previous section on [UAV control](ros2_uav.md), we said that a core part of UAV control is the *Autopilot*. It's a physical computer which takes sensor inputs to create motor voltages to spin the motor. To recreate this as closely as possible, we'd like to simulate all of this to ensure that the operation of the UAV is as realistic as possible.
 
 ### Software in the loop
 
-Thankfully, both Ardupilot and SITL can be run as *software in the loop* or *SITL* simulation where the flight stack that would run on the autopilot, runs on your local computer.
+Thankfully, both Ardupilot and SITL can be run as *software in the loop* or *SITL*, a simulation where the flight stack that would run on the autopilot, runs on your local computer.
 
-Simulators allow flight code to control a computer modeled vehicle in a simulated "world". You can interact with this vehicle just as you might with a real vehicle, using QGroundControl, an offboard API such as ROS, or a radio controller/gamepad.
+Simulators allow flight code to control a computer modelled vehicle in a simulated "world". You can interact with this vehicle just as you might with a real vehicle, using QGroundControl, an offboard API such as ROS, or a radio controller/gamepad.
 
-Simulation is a quick, easy, and most importantly, safe way to test changes to your controller before attempting to fly in the real world. It is also a good way to start flying when you haven't yet got a vehicle to experiment with or don't want to damage it.
+Simulation is a quick, easy, and most importantly, safe way to test changes to your controller before attempting to fly in the real world. It is also a good way to start flying when you haven't yet got a vehicle to experiment with or don't want to risk damaging it.
 
 From a Starling perspective, the MAVROS container does not distinguish between running on a real vehicle or running on SITL as both still speak the same version of MAVLINK. The MAVROS container internally handles connecting to the correct source.
 
@@ -24,17 +24,17 @@ From a Starling perspective, the MAVROS container does not distinguish between r
 
 ### Gazebo
 
-Alongisde the SITL, a physics engine is also required for it to run against. Together the simulation is often performed in *lockstep* where the SITL will generate a motion in one step based on the simulator state, follwed by the simulator advancing by one step based on that motion.
+Alongside the SITL, a physics engine is also required for it to run against. Together, the simulation is often performed in *lockstep* where the SITL will generate a motion in one step based on the simulator state, followed by the simulator advancing by one step based on that motion.
 
-In Starling, we primarily use the [gazebo](https://gazebosim.org/) physics and visualisation engine as it is one of the most commonly out there currently in the robotics space.
+In Starling, we primarily use the [Gazebo](https://gazebosim.org/) physics and visualisation engine as it is one of the most commonly out there currently in the robotics space.
 
-> Starling is designed with simulator modularity in mind, and it's hoped that in the future other simulators will also be supported!
+> Starling is designed with simulator modularity in mind, and it's hoped that in the future, other simulators will also be supported!
 
 Starling provides a number of containers which have Gazebo pre configured and installed, along with a web based interface for viewing the simulation in progress. In this tutorial, we will be using one container in particular.
 
 ## BRL Digital Double
 
-As well as simulating the vehicles themselves, it is also important to simulate the environment in which we are operating. For this tutorial we will be flying the Bristol Robotics Laboratory (BRL) flight arena, and therefore we provide a digital double of that space [here](https://github.com/StarlingUAS/BRLFlightArenaGazebo), and it is contained within the following container:
+As well as simulating the vehicles themselves, it is also important to simulate the environment in which we are operating. For this tutorial we will be flying in the Bristol Robotics Laboratory (BRL) flight arena, and therefore we provide a digital double of that space [here](https://github.com/StarlingUAS/BRLFlightArenaGazebo). It is contained in the following container:
 
 ```text
 uobflightlabstarling/uobflightlabstarling/starling-sim-iris-px4-flightarena:latest
@@ -42,7 +42,7 @@ uobflightlabstarling/uobflightlabstarling/starling-sim-iris-px4-flightarena:late
 
 This will place you into a space where the exact measurements match the real world version of the flight arena.
 
-> Flight arena is 15.6m x 11.8m x 5m (x, y, z) tall, origin is offset by (0.5, 0.7, 0.0) from space center. The coordinate space is x positive is up and y postivie is left (w.r.t the ascii figure).
+> Flight arena is 15.6m x 11.8m x 5m (x, y, z) tall, origin is offset by (0.5, 0.7, 0.0) from space center. The coordinate space is: x positive is up and y postive is left (w.r.t the ascii figure).
 
 ```
 _________________________________
@@ -62,15 +62,15 @@ _________________________________
 
 ## Running the local simulator
 
-With all of that in mind, we can now run the full simulation of a single UAV in the flight arena locally on your machine.
+We can now run the full simulation of a single UAV in the flight arena locally on your machine.
 
-Go to your new Starling application, and you should see a deployment folder. Inside there exists a `docker-compose.yml` file. A *docker compose* file is used to specify the running of multiple containers in one go, instead of having to run a bunch of them manually! To ensure that you have the latest containers, we should pull all of the used ones from docker hub explicitly:
+Go to your new Starling application, and you should see a deployment folder. Inside there is a `docker-compose.yml` file. A *docker compose* file is used to configure the running of multiple containers together, instead of having to run a bunch of them manually. To ensure that you have the latest containers, we should pull all of the used ones from Docker Hub:
 
 ```bash
 docker-compose -f deployment/docker-compose.yml pull
 ```
 
-> This can take a while, especially if the internet is slow.
+> This can take a while, especially if your internet connection is slow.
 
 Once downloaded, you can then run the simulator stack with the `up` command:
 
@@ -84,13 +84,15 @@ If you have downloaded and installed the Starling CLI from Murmuration, you coul
 starling deploy -f deployment/docker-compose.yml --pull start
 ```
 
-> *Note:* depending on what you also have running, you may receive a port in use error. If it is the port for simhost (8080), rosbridge (9090) or the ui (3000), you can change it as `<local_port>:<container_port>`.
+> *Note:* depending on what you also have running, you may receive a port in use error. If it is the port for simhost (8080), rosbridge (9090) or the UI (3000), you can change the value of `<local_port>:<container_port>` in the `docker-compose.yml` file.
 
 > *Note:* Stop the simulator with `ctrl+c`
 
-Once you have run, you should see a lot of text fly by in the terminal! Hopefully none of it is red...
+Once you have run the above command, you should see a lot of text fly by in the terminal! Hopefully none of it is red...
 
-To access the simulator, go to [`localhost:8080`](http://localhost:8080/), and to access the simple UI, go to [`localhost:3000`](http://localhost:3000/).
+To access the simulator, go to [`localhost:8080`](http://localhost:8080/).
+
+To access the simple UI, go to [`localhost:3000`](http://localhost:3000/).
 
 ![gazebo](imgs/simulation/gazebo.png)
 
@@ -100,17 +102,17 @@ The UI contains a simple Go and Stop button which both send topics of `/mission_
 
 ## What is in the local simulation
 
-Awesome you now have the local simulator running... but what have you actually run? Let's take you through the docker compose file:
+Awesome! You now have the local simulator running... but what have you actually run? Let's take you through the `docker-compose` file:
 
-- **uobflightlabstarling/starling-sim-iris-px4-flightarena**: As mentioned is the gazebo image which contains the model of the flying arena, as well as the model of the UAV. On startup, it spawns the arena and spawns a single vehicle into it.
-- **uobflightlabstarling/starling-sim-px4-sitl**: Is the container which runs the PX4 Software In The Loop mentioned earlier on. Throug the environment variables, it knows to connect to the gazebo container for physics, and then knows to expect the mavros container for offboard commands.
-- **uobflightlabstarling/starling-mavros**: Is the container which runs mavros mentioned in a previous tutorial. It serves as the connection point between the SITL and your own controller code.
-- **uobflightlabstarling/rosbridge-suite**: Is the gateway for web ros applications like the UI to connect to ROS.
-- **uobflightlabstarling/starling-ui-example**: Is the example web application with a simple interface.
+- **uobflightlabstarling/starling-sim-iris-px4-flightarena**: This is the Gazebo image which contains the model of the flying arena and the model of the UAV. On startup, it spawns the arena and spawns a single vehicle into it.
+- **uobflightlabstarling/starling-sim-px4-sitl**: The container which runs the PX4 Software In The Loop mentioned earlier. Through the environment variables, it knows to connect to the gazebo container for physics, and then knows to expect the mavros container for offboard commands.
+- **uobflightlabstarling/starling-mavros**: The container which runs mavros mentioned in a previous tutorial. It serves as the connection point between the SITL and your own controller code.
+- **uobflightlabstarling/rosbridge-suite**: The gateway for web ros applications like the UI to connect to ROS.
+- **uobflightlabstarling/starling-ui-example**: The example web application with a simple interface.
 
 ## Inspecting the local simulation
 
-To verify the functionality of the simulator, we can have a look at some of the ROS Topics that are being sent around. Let us do this by `exec`-ing into one of the containers. So again:
+To verify the functionality of the simulator, we can have a look at some of the ROS Topics that are being sent around. We do this by `exec`-ing into one of the containers:
 
 ```text
 docker ps
@@ -180,7 +182,7 @@ root@ca5384b42f41:/ros_ws# ros2 topic list
 /vehicle_1/mavros/vision_speed/speed_vector
 ```
 
-This list a list of all the topics currently being broadcast onto the system. Similarly we can inspect the current list of nodes:
+This lists a list of all the topics currently being broadcast onto the system. Similarly, we can inspect the current list of nodes:
 
 ```text
 root@ca5384b42f41:/ros_ws# ros2 node list
@@ -194,7 +196,7 @@ root@ca5384b42f41:/ros_ws# ros2 node list
 /vehicle_1/ros_bridge
 ```
 
-and many others. We can also have a look at some of the topics. For example, if we wanted to look at the state of a vehicle 1, we would have a look at `/vehicle_1/mavros/local_position/pose` (Press `ctrl+c` to stop the stream).
+and so on. We can also have a look at some of the topics. For example, if we wanted to look at the state of `vehicle_1`, we would have a look at `/vehicle_1/mavros/local_position/pose` (Press `ctrl+c` to stop the stream).
 
 ```text
 root@ca5384b42f41:/ros_ws# ros2 topic echo /vehicle_1/mavros/local_position/pose
@@ -234,10 +236,10 @@ pose:
 ...
 ```
 
-> Have a play around an investigate the other topics!
+> Have a play around and investigate the other topics!
 
 Finally to stop the simulator, you can simply run `ctrl+c` in the terminal running the simulator.
 
 ## Next Steps
 
-This tutorial should have introduced you to how UAV simulation works and the gazebo simulator we use in Starling. It should have also showed you how to run the simulator, so that you can test the controller you will be developing in the next part.
+This tutorial should have introduced you to how UAV simulation works and the Gazebo simulator we use in Starling. It's also shown you how to run the simulator. You'll need to use this to test the controller you will be developing in the next section.

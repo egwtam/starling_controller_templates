@@ -1,6 +1,6 @@
 # An Introduction to ROS2 and UAV Control
 
-This tutorial gives a brief overview and background on UAV Control and ROS2. By the end you should have a brief understanding of how a UAV is controlled, how Starling treats a UAV and why and how we use ROS2 to communicate with a UAV
+This tutorial gives a brief overview and background on UAV Control and ROS2. By the end you should have a brief understanding of how a UAV is controlled, how Starling treats a UAV and why and how we use ROS2 to communicate with a UAV.
 
 [TOC]
 
@@ -76,7 +76,7 @@ The MAVLink protocol is a set of preset commands which compatible firmwares unde
 
 ## A Brief Introduction to ROS
 
-This sections is adapted from [this article](https://dev.to/caelinsutch/a-brief-introduction-to-the-robot-operating-system-ros-15m5)
+This section is adapted from [this article](https://dev.to/caelinsutch/a-brief-introduction-to-the-robot-operating-system-ros-15m5)
 
 ROS stands for the Robot Operating System, yet it isn't an actual operating system. It's a framework designed to expedite the development time of robot platforms. To understand what ROS is, we should understand why ROS exists in the first place.
 
